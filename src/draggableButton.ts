@@ -1,5 +1,4 @@
 import { js2Style, openSidBar, resetBtnPos } from "./func";
-
 const draggableButton = document.createElement("button");
 const image = document.createElement("img");
 const road1 = document.createElement("div");
@@ -30,7 +29,7 @@ const dragBtnOpt = {
 };
 
 const imageOpt = {
-  src: "./wheel.svg",
+  src: "./assets/wheel.svg",
   style: {
     width: "100%",
     margin: "0px",

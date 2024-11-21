@@ -28,7 +28,7 @@ const dragBtnOpt = {
     draggable: true,
 };
 const imageOpt = {
-    src: "./wheel.svg",
+    src: "./assets/wheel.svg",
     style: {
         width: "100%",
         margin: "0px",

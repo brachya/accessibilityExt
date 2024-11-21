@@ -1,5 +1,5 @@
 import { createOptionsEl, js2Style, openSidBar, pushStyle } from "./func";
-import { FilterStrengthKeys } from "./types";
+import { FilterStrengthKeys } from "./global";
 
 const sidebar = document.createElement("div");
 const style = document.createElement("style");

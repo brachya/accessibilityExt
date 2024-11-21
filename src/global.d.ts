@@ -5,3 +5,8 @@ export type FilterStrengthKeys =
   | sepia
   | saturate
   | sepiaHue;
+
+declare module "*.svg" {
+  const content: string;
+  export default content;
+}
