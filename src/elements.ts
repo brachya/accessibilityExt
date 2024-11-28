@@ -13,3 +13,4 @@ export const getIsDragged = () => isDragged;
 export const setIsDragged = (changeTo: boolean) => {
   isDragged = changeTo;
 };
+export const move = document.createElement("select");

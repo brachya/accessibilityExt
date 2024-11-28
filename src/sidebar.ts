@@ -1,11 +1,5 @@
-import { sidebar } from "./elements";
-import {
-  createOptionsEl,
-  jsToStyle,
-  openSidBar,
-  pushStyle,
-  readMe,
-} from "./func";
+import { move, negishutPos, sidebar } from "./elements";
+import { jsToStyle, openSideBar, pushStyle, readMe } from "./func";
 import { FilterStrengthKeys, JsEl } from "./global";
 const style = document.createElement("style");
 const closeBtn = document.createElement("button");
@@ -21,9 +15,8 @@ const sepia = document.createElement("button");
 const saturate = document.createElement("button");
 const sepiaHue = document.createElement("button");
 const focus = document.createElement("button");
-const moveBox = document.createElement("div");
+const moveBox = document.createElement("label");
 const moveHeader = document.createElement("span");
-const move = document.createElement("select");
 const font = document.createElement("button");
 const pauseAnimate = document.createElement("button");
 const speaker = document.createElement("button");
@@ -51,7 +44,11 @@ const chooseOnlyMe = (event: MouseEvent) => {
     preStyle["filter"] = `html{filter:${id == "sepiaHue" ? "sepia" : id}(${
       filterStrength[id]["strength"]
     }%) ${filterStrength[id]["addition"] ?? ""} !important;}`;
+    negishutPos["filter"] = id;
+    localStorage.setItem("NegishutPos", JSON.stringify(negishutPos));
   } else {
+    delete negishutPos["filter"];
+    localStorage.setItem("NegishutPos", JSON.stringify(negishutPos));
     preStyle["filter"] = "";
     chosen = null;
   }
@@ -171,6 +168,7 @@ pushStyle(style, preStyle);
 const sidebarOpt: JsEl = {
   id: "sidebar",
   style: {
+    display: "none",
     position: "fixed",
     top: "0",
     left: `min(-380px,-100vw)`,
@@ -200,7 +198,8 @@ const btnOpt: JsEl = {
   className: "hoverByMe",
   type: "button",
   style: {
-    width: "100%",
+    flex: "1",
+    // width: "100%",
     aspectRatio: "1/1",
     background: "rgba(255,255,255,0.3)",
     // backdropFilter: "blur(10px)",
@@ -231,9 +230,13 @@ const rowOpt: JsEl = {
   },
 };
 const moveOpt: JsEl = {
+  ariaLabel: "ניווט בדף",
   style: {
-    width: "100%",
-    height: "20%",
+    color: "black",
+    position: "absolute",
+    bottom: "10%",
+    width: "90%",
+    height: "40%",
     border: "1px solid skyblue",
     background: "rgba(255,255,255,0.3)",
     padding: "2px",
@@ -244,22 +247,33 @@ const moveOpt: JsEl = {
 
 const moveBoxOpt: JsEl = {
   style: {
-    width: "100%",
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
     justifyContent: "center",
+    font: "bold",
   },
 };
-const moveHeaderOpt: JsEl = { innerHTML: "ניווט" };
-jsToStyle(moveBox, moveBoxOpt);
+const moveHeaderOpt: JsEl = {
+  innerText: "ניווט",
+  style: {
+    position: "absolute",
+    top: "10%",
+    font: "bold",
+    fontSize: "large",
+  },
+};
+jsToStyle(moveBox, {
+  ...btnOpt,
+  style: { ...btnOpt["style"], ...moveBoxOpt["style"] },
+});
 jsToStyle(moveHeader, moveHeaderOpt);
 moveBox.append(moveHeader, move);
 
 jsToStyle(closeBtn, closeBtnOpt);
 closeBtn.autofocus = true;
 // Add event listener to close button
-closeBtn.addEventListener("click", openSidBar);
+closeBtn.addEventListener("click", openSideBar);
 
 // Append close button and menu to sidebar
 
@@ -270,6 +284,8 @@ textBigger.addEventListener("click", () => {
     font-size: ${++textSize}px !important;
   }
   `;
+  negishutPos["text"] = textSize;
+  localStorage.setItem("NegishutPos", JSON.stringify(negishutPos));
   pushStyle(style, preStyle);
 });
 jsToStyle(textSmaller, uniqueName(btnOpt, "-", "textSizeSmaller"));
@@ -279,12 +295,16 @@ textSmaller.addEventListener("click", () => {
     font-size: ${--textSize}px !important;
   }
   `;
+  negishutPos["text"] = textSize;
+  localStorage.setItem("NegishutPos", JSON.stringify(negishutPos));
   pushStyle(style, preStyle);
 });
 jsToStyle(textReset, uniqueName(btnOpt, "X", "textSizeReset"));
 textReset.ariaLabel = "איפוס גודל טקסט";
 textReset.addEventListener("click", () => {
   preStyle["text"] = "";
+  delete negishutPos["text"];
+  localStorage.setItem("NegishutPos", JSON.stringify(negishutPos));
   pushStyle(style, preStyle);
 });
 
@@ -297,10 +317,14 @@ hyperBold.addEventListener("click", () => {
     }`;
     pushStyle(style, preStyle);
     hyperBold.classList.add("checkedByNegishut");
+    negishutPos["hyper"] = true;
+    localStorage.setItem("NegishutPos", JSON.stringify(negishutPos));
   } else {
     preStyle["hyper"] = "";
     pushStyle(style, preStyle);
     hyperBold.classList.remove("checkedByNegishut");
+    delete negishutPos["hyper"];
+    localStorage.setItem("NegishutPos", JSON.stringify(negishutPos));
   }
 });
 jsToStyle(headersBold, uniqueName(btnOpt, "כותרת", "headersBold"));
@@ -311,9 +335,13 @@ headersBold.addEventListener("click", () => {
     border:2px solid red !important;}`;
     pushStyle(style, preStyle);
     headersBold.classList.add("checkedByNegishut");
+    negishutPos["headers"] = true;
+    localStorage.setItem("NegishutPos", JSON.stringify(negishutPos));
   } else {
     preStyle["headers"] = "";
     pushStyle(style, preStyle);
+    delete negishutPos["headers"];
+    localStorage.setItem("NegishutPos", JSON.stringify(negishutPos));
     headersBold.classList.remove("checkedByNegishut");
   }
 });
@@ -345,8 +373,13 @@ focus.addEventListener("click", (event) => {
         border: 4px solid red !important;
         }`;
     eventBtn.classList.add("checkedByNegishut");
+    negishutPos["focus"] = true;
+    localStorage.setItem("NegishutPos", JSON.stringify(negishutPos));
   } else {
     preStyle["focus"] = "";
+    delete negishutPos["focus"];
+    localStorage.setItem("NegishutPos", JSON.stringify(negishutPos));
+
     eventBtn.classList.remove("checkedByNegishut");
   }
   pushStyle(style, preStyle);
@@ -361,9 +394,13 @@ font.addEventListener("click", (event) => {
     font-family: Arial, Helvetica, sans-serif !important;
     }`;
     eventBtn.classList.add("checkedByNegishut");
+    negishutPos["font"] = true;
+    localStorage.setItem("NegishutPos", JSON.stringify(negishutPos));
   } else {
     preStyle["font"] = "";
     eventBtn.classList.remove("checkedByNegishut");
+    delete negishutPos["font"];
+    localStorage.setItem("NegishutPos", JSON.stringify(negishutPos));
   }
   pushStyle(style, preStyle);
 });
@@ -394,9 +431,13 @@ pauseAnimate.addEventListener("click", (event) => {
         el.style.transform = transform;
       }
     });
+    negishutPos["pauseAnimate"] = true;
+    localStorage.setItem("NegishutPos", JSON.stringify(negishutPos));
   } else {
     preStyle["pauseAnimate"] = "";
     eventBtn.classList.remove("checkedByNegishut");
+    delete negishutPos["pauseAnimate"];
+    localStorage.setItem("NegishutPos", JSON.stringify(negishutPos));
   }
   pushStyle(style, preStyle);
 });
@@ -406,12 +447,16 @@ speaker.addEventListener("click", (event) => {
   const eventBtn = event.target as HTMLButtonElement;
   if (readActive) {
     removeEventListener("focusin", readMe);
+    delete negishutPos["speaker"];
+    localStorage.setItem("NegishutPos", JSON.stringify(negishutPos));
     readActive = false;
     eventBtn.classList.remove("checkedByNegishut");
   } else {
     addEventListener("focusin", readMe);
     readActive = true;
     eventBtn.classList.add("checkedByNegishut");
+    negishutPos["speaker"] = true;
+    localStorage.setItem("NegishutPos", JSON.stringify(negishutPos));
   }
 });
 
@@ -424,13 +469,9 @@ const intoRow = (...elements: HTMLElement[]) => {
   });
   return row;
 };
-const moveOptions = [
-  { value: "top", textContent: "ראש הדף" },
-  { value: "main", textContent: "מרכז" },
-  { value: "bottom", textContent: "תחתית הדף" },
-];
+
 jsToStyle(move, moveOpt);
-move.append(...createOptionsEl(moveOptions));
+
 move.addEventListener("change", (event) => {
   const eventSelect = event.target as HTMLSelectElement;
   const { value } = eventSelect;
@@ -440,13 +481,19 @@ move.addEventListener("change", (event) => {
       scrollTo({ top: 0, behavior: "smooth" });
       break;
     }
-    case "main": {
+    case "middle": {
       scrollTo({ top: document.body.offsetHeight / 2, behavior: "smooth" });
       break;
     }
     case "bottom": {
       scrollTo({ top: document.body.offsetHeight, behavior: "smooth" });
       break;
+    }
+    default: {
+      if (find) {
+        scrollTo({ top: find.clientTop, behavior: "smooth" });
+        break;
+      }
     }
   }
 });
@@ -491,7 +538,9 @@ document.body.append(statement);
 
 document.head.append(style);
 const guide = document.createElement("span");
-guide.innerText = "ALT+A לפתיחת וסגירת החלון נגישות";
+guide.innerText = `
+ALT+A לפתיחת וסגירת החלון נגישות
+פותח על ידי ברכיה יצחק שושן`;
 guide.style.fontSize = "large";
 sidebar.appendChild(intoRow(closeBtn, openStateBtn));
 sidebar.appendChild(intoRow(hyperBold, headersBold, font));
@@ -502,4 +551,36 @@ sidebar.appendChild(intoRow(focus, moveBox, pauseAnimate));
 sidebar.appendChild(intoRow(speaker));
 sidebar.appendChild(intoRow(guide));
 
+const remember = () => {
+  if (negishutPos["text"]) {
+    textSize = negishutPos["text"];
+    preStyle["text"] = `* {
+      font-size: ${textSize}px !important;
+    }
+    `;
+    pushStyle(style, preStyle);
+  }
+  if (negishutPos["headers"]) {
+    headersBold.click();
+  }
+  if (negishutPos["hyper"]) {
+    hyperBold.click();
+  }
+  if (negishutPos["font"]) {
+    font.click();
+  }
+  if (negishutPos["filter"]) {
+    filterStrength[negishutPos["filter"]].btn.click();
+  }
+  if (negishutPos["pauseAnimate"]) {
+    pauseAnimate.click();
+  }
+  if (negishutPos["focus"]) {
+    focus.click();
+  }
+  if (negishutPos["speaker"]) {
+    speaker.click();
+  }
+};
+remember();
 export default sidebar;

@@ -8,10 +8,9 @@ import {
   road4,
   setIsDragged,
 } from "./elements";
-import { jsToStyle, openSidBar, resetBtnPos } from "./func";
+import { jsToStyle, openSideBar, resetBtnPos } from "./func";
 import { JsEl } from "./global";
 import { cases } from "./wheelChair";
-// import wheel from "./assets/wheel.svg";
 const image = document.createElement("div");
 let offsetX = 0; // X offset between cursor and button
 let offsetY = 0; // Y offset between cursor and button
@@ -137,8 +136,8 @@ addEventListener("keydown", (event) => {
 // Add event listeners to start dragging on mouse down or touch start
 draggableButton.addEventListener("mousedown", startDrag);
 draggableButton.addEventListener("touchstart", startDrag);
-draggableButton.addEventListener("click", openSidBar);
-draggableButton.addEventListener("touchstart", openSidBar);
+draggableButton.addEventListener("click", openSideBar);
+draggableButton.addEventListener("touchstart", openSideBar);
 addEventListener("resize", resetBtnPos);
 
 export default draggableButton;

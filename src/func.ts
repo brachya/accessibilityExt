@@ -2,6 +2,7 @@ import {
   buttonSize,
   draggableButton,
   getIsDragged,
+  move,
   road1,
   road2,
   road3,
@@ -55,9 +56,21 @@ setInterval(() => {
     roadMove = (roadMove - buttonSize * 0.04) % buttonSize;
   }
 }, 100);
-
+const moveOptions = [
+  { value: "top", textContent: "ראש הדף" },
+  { value: "header", textContent: "תפריט" },
+  { value: "nav", textContent: "תפריט" },
+  { value: "main", textContent: "תוכן" },
+  { value: "h1", textContent: "כותרת ראשית" },
+  { value: "h2", textContent: "כותרת משנית" },
+  { value: "middle", textContent: "מרכז" },
+  { value: "bottom", textContent: "תחתית הדף" },
+];
+const focusableElements = sidebar.querySelectorAll(
+  "button, a, select, [tabindex]"
+);
 export let sidebarOpen = false;
-export const openSidBar = () => {
+export const openSideBar = () => {
   if (getIsDragged()) {
     setIsDragged(false);
     return;
@@ -65,11 +78,17 @@ export const openSidBar = () => {
   if (!sidebarOpen) {
     sidebar.style.left = "0"; // Slide in the sidebar
     sidebarOpen = true;
-    sidebar.click();
+
+    move.innerHTML = "";
+    move.append(...createOptionsEl(moveOptions));
+    (sidebar.children[0] as HTMLButtonElement).focus();
   } else {
     sidebar.style.left = `-${sidebar.offsetWidth}px`; // Hide the sidebar
     sidebarOpen = false;
   }
+  setTimeout(() => {
+    sidebar.style.display = sidebarOpen ? "block" : "none";
+  }, 300);
 };
 export const resetBtnPos = () => {
   draggableButton.style.left = "20px";
@@ -80,9 +99,12 @@ export const createOptionsEl = (
 ) => {
   return elOptions.map((el) => {
     const opt = document.createElement("option");
+    const find = document.querySelector(el.value);
     opt.value = el.value;
     opt.textContent = el.textContent;
-    return opt;
+    if (find || ["top", "middle", "bottom"].includes(el.value)) {
+      return opt;
+    }
   });
 };
 
