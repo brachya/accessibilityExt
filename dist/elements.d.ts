@@ -9,3 +9,4 @@ export declare const negishutPos: any;
 export declare let buttonSize: number;
 export declare const getIsDragged: () => boolean;
 export declare const setIsDragged: (changeTo: boolean) => void;
+export declare const move: HTMLSelectElement;
