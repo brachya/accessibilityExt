@@ -1,2 +1,2 @@
-declare const draggableButton: HTMLButtonElement;
+import { draggableButton } from "./elements";
 export default draggableButton;

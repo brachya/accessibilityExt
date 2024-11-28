@@ -1,12 +1,11 @@
-"use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
+import draggableButton from "./draggableButton";
+import sidebar from "./sidebar";
+/**
+ * @description an init function to add the button and sidebar to body
+ * @example initiate()
+ */
+export const initiate = () => {
+    document.body.append(draggableButton);
+    document.body.append(sidebar);
 };
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.init = init;
-const draggableButton_1 = __importDefault(require("./draggableButton"));
-const sidebar_1 = __importDefault(require("./sidebar"));
-function init() {
-    document.body.append(draggableButton_1.default);
-    document.body.appendChild(sidebar_1.default);
-}
+export const next = () => [draggableButton, sidebar];

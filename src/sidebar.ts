@@ -1,7 +1,12 @@
-import { createOptionsEl, js2Style, openSidBar, pushStyle } from "./func";
-import { FilterStrengthKeys } from "./global";
-
-const sidebar = document.createElement("div");
+import { sidebar } from "./elements";
+import {
+  createOptionsEl,
+  jsToStyle,
+  openSidBar,
+  pushStyle,
+  readMe,
+} from "./func";
+import { FilterStrengthKeys, JsEl } from "./global";
 const style = document.createElement("style");
 const closeBtn = document.createElement("button");
 const textBigger = document.createElement("button");
@@ -16,7 +21,12 @@ const sepia = document.createElement("button");
 const saturate = document.createElement("button");
 const sepiaHue = document.createElement("button");
 const focus = document.createElement("button");
+const moveBox = document.createElement("div");
+const moveHeader = document.createElement("span");
 const move = document.createElement("select");
+const font = document.createElement("button");
+const pauseAnimate = document.createElement("button");
+const speaker = document.createElement("button");
 const filterStrength: Record<
   FilterStrengthKeys,
   { btn: HTMLElement; strength: number; addition?: string }
@@ -37,7 +47,7 @@ const chooseOnlyMe = (event: MouseEvent) => {
     filterStrength[chosen]["btn"].click();
   }
   if (preStyle.filter == "") {
-    chosen = id;
+    chosen = id as FilterStrengthKeys;
     preStyle["filter"] = `html{filter:${id == "sepiaHue" ? "sepia" : id}(${
       filterStrength[id]["strength"]
     }%) ${filterStrength[id]["addition"] ?? ""} !important;}`;
@@ -46,34 +56,139 @@ const chooseOnlyMe = (event: MouseEvent) => {
     chosen = null;
   }
   pushStyle(style, preStyle);
-  eventBtn.classList.toggle("checked");
+  eventBtn.classList.toggle("checkedByNegishut");
 };
-// Create the sidebar element
+
 let textSize = 10;
 const preStyle = {
   text: "",
   hyper: "",
   headers: "",
   filter: "",
-  checked: ".checked{background: rgb(82, 192, 212);}",
+  font: "",
+  pauseAnimate: "",
+  checkedByNegishut: `
+    .checkedByNegishut{
+    background: rgb(82, 192, 212) !important;
+    } 
+    `,
   focus: "",
+  draggableButton: `
+  .draggableButtonNegishut:hover {
+  background: rgba(42, 119, 191, 0.5) !important;
+}`,
+  addition: `
+.hoverByMe {
+  --color: #2e42ff;
+  padding: 0.8em 2em;
+  background-color: transparent;
+  border-radius: 0.6em;
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+  font-weight: 700;
+  font-size: 17px;
+  border: 2px solid var(--color);
+  font-family: inherit;
+  text-transform: uppercase;
+  text-align:center;
+  z-index: 1;
+  display: inline-block;
+  text-decoration: none;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.hoverByMe::before,
+.hoverByMe::after {
+  content: "";
+  display: block;
+  width: 50px;
+  height: 50px;
+  transform: translate(-50%, -50%);
+  position: absolute;
+  border-radius: 50%;
+  z-index: -1;
+  background-color: var(--color);
+  transition: 0.7s ease-in-out;
+}
+
+.hoverByMe::before {
+  top: -1em;
+  left: -1em;
+}
+
+.hoverByMe::after {
+  left: calc(100% + 1em);
+  top: calc(100% + 1em);
+}
+
+.hoverByMe:hover::before,
+.hoverByMe:hover::after {
+  height: 410px;
+  width: 410px;
+}
+
+.hoverByMe:hover {
+  background: linear-gradient(135deg, #2e42ff, #6a75ff);
+  color: #ffffff;
+  border-color: #6a75ff;
+  box-shadow: 0 6px 15px rgba(46, 66, 255, 0.4),
+    0 8px 24px rgba(46, 66, 255, 0.2);
+  transform: translateY(-3px);
+}
+
+.hoverByMe:active {
+  transform: scale(0.97);
+  filter: brightness(0.85);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
+  background: linear-gradient(135deg, #2e42ff, #5c6bff);
+}
+
+.hoverByMe:focus {
+  outline: none;
+  border-color: #7289da;
+  background:rgba(255,255,255,0.8) !important;
+  box-shadow: 0 0 0 4px rgba(46, 66, 255, 0.3);
+}
+.hoverNegishut:hover{
+  background: rgba(255,255,255,0.8) !important;
+}
+.hoverNegishut:focus{
+  background: rgba(255,255,255,0.8) !important;
+}
+@keyframes dissapeareToAppeare{
+from{opacity:0%}
+to{opacity:100%}
+}
+#statement,#negishutDragBtn{
+animation:dissapeareToAppeare;
+animation-duration:1s;
+}
+`,
 };
-const sidebarOpt = {
+pushStyle(style, preStyle);
+const sidebarOpt: JsEl = {
   id: "sidebar",
   style: {
     position: "fixed",
     top: "0",
-    left: "-250px",
-    width: "250px",
+    left: `min(-380px,-100vw)`,
+    width: "min(380px,100vw)",
     height: "100%",
-    backgroundColor: "#333",
-    color: "white",
+    backgroundColor: "transparent",
+    backdropFilter: "blur(8px)",
+    color: "black",
     transition: "left 0.3s ease-in-out",
-    overflowX: "hidden",
+    overflowX: "auto",
     overflowY: "auto",
+    paddingLeft: "2px",
+    paddingRight: "2px",
+    scrollbarWidth: "none",
   },
 };
-js2Style(sidebar, sidebarOpt);
+jsToStyle(sidebar, sidebarOpt);
+sidebar.tabIndex = 0;
 const uniqueName = (cssOpt: any, name: string, id: string) => {
   cssOpt["innerHTML"] = name;
   cssOpt["id"] = id;
@@ -81,36 +196,74 @@ const uniqueName = (cssOpt: any, name: string, id: string) => {
 };
 // Create a close button
 closeBtn.style.overflow = "auto";
-const btnOpt = {
+const btnOpt: JsEl = {
+  className: "hoverByMe",
+  type: "button",
   style: {
     width: "100%",
     aspectRatio: "1/1",
+    background: "rgba(255,255,255,0.3)",
+    // backdropFilter: "blur(10px)",
+    border: "1px solid skyblue",
+    borderRadius: "5%",
+    margin: "2px",
   },
 };
-const closeBtnOpt = {
-  innerText: "Close",
+const closeBtnOpt: JsEl = {
+  innerText: "סגור",
+  className: "hoverNegishut",
   style: {
     top: "10px",
     right: "10px",
     fontSize: "18px",
+    border: "1px solid skyblue",
     cursor: "pointer",
+    background: "rgba(255,255,255,0.3)",
+    borderRadius: "10%",
+    padding: "2px",
   },
 };
-const rowOpt = {
+const rowOpt: JsEl = {
   style: {
     display: "flex",
     justifyContent: "space-around",
     width: "100%",
   },
 };
-js2Style(closeBtn, closeBtnOpt);
+const moveOpt: JsEl = {
+  style: {
+    width: "100%",
+    height: "20%",
+    border: "1px solid skyblue",
+    background: "rgba(255,255,255,0.3)",
+    padding: "2px",
+    textAlign: "center",
+    borderRadius: "10%",
+  },
+};
 
+const moveBoxOpt: JsEl = {
+  style: {
+    width: "100%",
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+};
+const moveHeaderOpt: JsEl = { innerHTML: "ניווט" };
+jsToStyle(moveBox, moveBoxOpt);
+jsToStyle(moveHeader, moveHeaderOpt);
+moveBox.append(moveHeader, move);
+
+jsToStyle(closeBtn, closeBtnOpt);
+closeBtn.autofocus = true;
 // Add event listener to close button
 closeBtn.addEventListener("click", openSidBar);
 
 // Append close button and menu to sidebar
 
-js2Style(textBigger, uniqueName(btnOpt, "+", "textSizeBigger"));
+jsToStyle(textBigger, uniqueName(btnOpt, "+", "textSizeBigger"));
 textBigger.ariaLabel = "הגדלת טקסט";
 textBigger.addEventListener("click", () => {
   preStyle["text"] = `* {
@@ -119,7 +272,7 @@ textBigger.addEventListener("click", () => {
   `;
   pushStyle(style, preStyle);
 });
-js2Style(textSmaller, uniqueName(btnOpt, "-", "textSizeSmaller"));
+jsToStyle(textSmaller, uniqueName(btnOpt, "-", "textSizeSmaller"));
 textSmaller.ariaLabel = "הקטנת טקסט";
 textSmaller.addEventListener("click", () => {
   preStyle["text"] = `* {
@@ -128,14 +281,14 @@ textSmaller.addEventListener("click", () => {
   `;
   pushStyle(style, preStyle);
 });
-js2Style(textReset, uniqueName(btnOpt, "X", "textSizeReset"));
+jsToStyle(textReset, uniqueName(btnOpt, "X", "textSizeReset"));
 textReset.ariaLabel = "איפוס גודל טקסט";
 textReset.addEventListener("click", () => {
   preStyle["text"] = "";
   pushStyle(style, preStyle);
 });
 
-js2Style(hyperBold, uniqueName(btnOpt, "קישור", "hyperBold"));
+jsToStyle(hyperBold, uniqueName(btnOpt, "קישור", "hyperBold"));
 hyperBold.addEventListener("click", () => {
   if (preStyle.hyper == "") {
     preStyle["hyper"] = `a{
@@ -143,46 +296,46 @@ hyperBold.addEventListener("click", () => {
     border:2px solid red !important;
     }`;
     pushStyle(style, preStyle);
-    hyperBold.classList.add("checked");
+    hyperBold.classList.add("checkedByNegishut");
   } else {
     preStyle["hyper"] = "";
     pushStyle(style, preStyle);
-    hyperBold.classList.remove("checked");
+    hyperBold.classList.remove("checkedByNegishut");
   }
 });
-js2Style(headersBold, uniqueName(btnOpt, "כותרת", "headersBold"));
+jsToStyle(headersBold, uniqueName(btnOpt, "כותרת", "headersBold"));
 headersBold.addEventListener("click", () => {
   if (preStyle.headers == "") {
     preStyle["headers"] = `h1,h2,h3,h4,h5,h6,h7{
       font-weight:900 !important;
     border:2px solid red !important;}`;
     pushStyle(style, preStyle);
-    headersBold.classList.add("checked");
+    headersBold.classList.add("checkedByNegishut");
   } else {
     preStyle["headers"] = "";
     pushStyle(style, preStyle);
-    headersBold.classList.remove("checked");
+    headersBold.classList.remove("checkedByNegishut");
   }
 });
-js2Style(grayScale, uniqueName(btnOpt, "עיוור צבעים", "grayscale"));
+jsToStyle(grayScale, uniqueName(btnOpt, "עיוור צבעים", "grayscale"));
 grayScale.addEventListener("click", chooseOnlyMe);
 
-js2Style(invertColors, uniqueName(btnOpt, "כבדי ראיה", "invert"));
+jsToStyle(invertColors, uniqueName(btnOpt, "כבדי ראיה", "invert"));
 invertColors.addEventListener("click", chooseOnlyMe);
 
-js2Style(brightness, uniqueName(btnOpt, "בהירות גבוהה", "brightness"));
+jsToStyle(brightness, uniqueName(btnOpt, "בהירות גבוהה", "brightness"));
 brightness.addEventListener("click", chooseOnlyMe);
 
-js2Style(sepia, uniqueName(btnOpt, "אור כחול", "sepia"));
+jsToStyle(sepia, uniqueName(btnOpt, "אור כחול", "sepia"));
 sepia.addEventListener("click", chooseOnlyMe);
 
-js2Style(saturate, uniqueName(btnOpt, "צבעים עזים", "saturate"));
+jsToStyle(saturate, uniqueName(btnOpt, "צבעים עזים", "saturate"));
 saturate.addEventListener("click", chooseOnlyMe);
 
-js2Style(sepiaHue, uniqueName(btnOpt, "צבעים קרים", "sepiaHue"));
+jsToStyle(sepiaHue, uniqueName(btnOpt, "צבעים קרים", "sepiaHue"));
 sepiaHue.addEventListener("click", chooseOnlyMe);
 
-js2Style(focus, uniqueName(btnOpt, "הדגשה", "focus"));
+jsToStyle(focus, uniqueName(btnOpt, "הדגשה", "focus"));
 focus.addEventListener("click", (event) => {
   const eventBtn = event.target as HTMLButtonElement;
   if (preStyle["focus"] == "") {
@@ -191,18 +344,81 @@ focus.addEventListener("click", (event) => {
     *:focus {
         border: 4px solid red !important;
         }`;
-    eventBtn.classList.add("checked");
+    eventBtn.classList.add("checkedByNegishut");
   } else {
     preStyle["focus"] = "";
-    eventBtn.classList.remove("checked");
+    eventBtn.classList.remove("checkedByNegishut");
   }
   pushStyle(style, preStyle);
+});
+
+jsToStyle(font, uniqueName(btnOpt, "שינוי פונט", "font"));
+font.addEventListener("click", (event) => {
+  const eventBtn = event.target as HTMLButtonElement;
+  if (preStyle["font"] == "") {
+    preStyle["font"] = `
+    *{
+    font-family: Arial, Helvetica, sans-serif !important;
+    }`;
+    eventBtn.classList.add("checkedByNegishut");
+  } else {
+    preStyle["font"] = "";
+    eventBtn.classList.remove("checkedByNegishut");
+  }
+  pushStyle(style, preStyle);
+});
+
+jsToStyle(pauseAnimate, uniqueName(btnOpt, "השהה אנימציות", "pauseAnimate"));
+pauseAnimate.addEventListener("click", (event) => {
+  const eventBtn = event.target as HTMLButtonElement;
+  if (preStyle["pauseAnimate"] == "") {
+    preStyle["pauseAnimate"] = `
+    * {
+    animation-play-state: paused !important;
+    transition: none !important;
+    animation:none !important;
+    }
+    `;
+    eventBtn.classList.add("checkedByNegishut");
+    const elements = document.querySelectorAll(".element");
+
+    elements.forEach((el: HTMLElement) => {
+      const computedStyle = window.getComputedStyle(el);
+      const transform = computedStyle.transform;
+
+      // הפסקת האנימציה
+      el.style.animation = "none";
+
+      // החלת מצב הסופי
+      if (transform !== "none") {
+        el.style.transform = transform;
+      }
+    });
+  } else {
+    preStyle["pauseAnimate"] = "";
+    eventBtn.classList.remove("checkedByNegishut");
+  }
+  pushStyle(style, preStyle);
+});
+let readActive = false;
+jsToStyle(speaker, uniqueName(btnOpt, "קורא מסך", "speaker"));
+speaker.addEventListener("click", (event) => {
+  const eventBtn = event.target as HTMLButtonElement;
+  if (readActive) {
+    removeEventListener("focusin", readMe);
+    readActive = false;
+    eventBtn.classList.remove("checkedByNegishut");
+  } else {
+    addEventListener("focusin", readMe);
+    readActive = true;
+    eventBtn.classList.add("checkedByNegishut");
+  }
 });
 
 const intoRow = (...elements: HTMLElement[]) => {
   const row = document.createElement("div");
 
-  js2Style(row, rowOpt);
+  jsToStyle(row, rowOpt);
   elements.forEach((el) => {
     row.appendChild(el);
   });
@@ -213,14 +429,12 @@ const moveOptions = [
   { value: "main", textContent: "מרכז" },
   { value: "bottom", textContent: "תחתית הדף" },
 ];
-js2Style(move, { style: { width: "100%" } });
+jsToStyle(move, moveOpt);
 move.append(...createOptionsEl(moveOptions));
 move.addEventListener("change", (event) => {
   const eventSelect = event.target as HTMLSelectElement;
   const { value } = eventSelect;
   const find = document.querySelector(value);
-  console.log(document.body.offsetHeight);
-  console.log(document.body.offsetHeight / 2);
   switch (value) {
     case "top": {
       scrollTo({ top: 0, behavior: "smooth" });
@@ -236,14 +450,56 @@ move.addEventListener("change", (event) => {
     }
   }
 });
-document.head.append(style);
+const statementOpt: JsEl = {
+  id: "statement",
+  style: {
+    borderRadius: "5%",
+    backdropFilter: "blur(10px)",
+    border: "2px solid skyblue",
+    background: "rgba(255,255,255,0.3)",
+    width: "50%",
+    padding: "10px",
+  },
+};
+const statement = document.createElement("dialog");
+const paragraphStatement = document.createElement("p");
+const openStateBtn = document.createElement("button");
+const closeStateBtn = document.createElement("button");
+paragraphStatement.style.textAlign = "center";
+paragraphStatement.innerText = `
+אתר זה רואה חשיבות רבה בהנגשתו לכלל האוכלוסייה ופועל כדי לאפשר לאנשים עם מוגבלות חוויית שימוש נוחה ונגישה בתכניו.
 
-sidebar.appendChild(intoRow(closeBtn));
-sidebar.appendChild(intoRow(hyperBold, headersBold));
-sidebar.appendChild(intoRow(grayScale, invertColors));
-sidebar.appendChild(intoRow(brightness, sepia));
-sidebar.appendChild(intoRow(saturate, sepiaHue));
+במסגרת מאמצי ההנגשה, האתר עובר התאמות ועומד בתקני הנגישות העדכניים ביותר. עם זאת, ייתכנו חלקים באתר או תכנים המוצעים על ידי גורמי צד שלישי, כגון סרטונים מוטמעים או קבצים חיצוניים, שאינם נגישים במלואם.
+
+אנו שואפים לשפר את הנגישות באופן מתמיד ולהבטיח חוויית גלישה טובה לכל המשתמשים. במידה ונתקלתם בקושי או בבעיה בנגישות האתר, נשמח אם תפנו אלינו על מנת שנוכל לטפל בכך בהקדם האפשרי.
+`;
+closeStateBtn.autofocus = true;
+openStateBtn.addEventListener("click", () => {
+  statement.showModal();
+});
+closeStateBtn.addEventListener("click", () => {
+  statement.close();
+});
+jsToStyle(statement, statementOpt);
+jsToStyle(
+  openStateBtn,
+  uniqueName(closeBtnOpt, "הצהרת נגישות", "openStateBtn")
+);
+jsToStyle(closeStateBtn, uniqueName(closeBtnOpt, "סגור", "closeStateBtn"));
+statement.append(closeStateBtn, paragraphStatement);
+document.body.append(statement);
+
+document.head.append(style);
+const guide = document.createElement("span");
+guide.innerText = "ALT+A לפתיחת וסגירת החלון נגישות";
+guide.style.fontSize = "large";
+sidebar.appendChild(intoRow(closeBtn, openStateBtn));
+sidebar.appendChild(intoRow(hyperBold, headersBold, font));
+sidebar.appendChild(intoRow(grayScale, invertColors, brightness));
+sidebar.appendChild(intoRow(saturate, sepiaHue, sepia));
 sidebar.appendChild(intoRow(textBigger, textSmaller, textReset));
-sidebar.appendChild(intoRow(focus, move));
+sidebar.appendChild(intoRow(focus, moveBox, pauseAnimate));
+sidebar.appendChild(intoRow(speaker));
+sidebar.appendChild(intoRow(guide));
 
 export default sidebar;

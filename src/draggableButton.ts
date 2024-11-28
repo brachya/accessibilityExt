@@ -1,23 +1,36 @@
-import { js2Style, openSidBar, resetBtnPos } from "./func";
-const draggableButton = document.createElement("button");
-const image = document.createElement("img");
-const road1 = document.createElement("div");
-const road2 = document.createElement("div");
-const road3 = document.createElement("div");
-const road4 = document.createElement("div");
-
+import {
+  buttonSize,
+  draggableButton,
+  negishutPos,
+  road1,
+  road2,
+  road3,
+  road4,
+  setIsDragged,
+} from "./elements";
+import { jsToStyle, openSidBar, resetBtnPos } from "./func";
+import { JsEl } from "./global";
+import { cases } from "./wheelChair";
+// import wheel from "./assets/wheel.svg";
+const image = document.createElement("div");
 let offsetX = 0; // X offset between cursor and button
 let offsetY = 0; // Y offset between cursor and button
 let isDragging = false; // Whether the button is being dragged
-
-const dragBtnOpt = {
+let xForBackup: number;
+let yForBackup: number;
+const dragBtnOpt: JsEl = {
+  dir: "ltr",
   type: "button",
   ariaLabel: "כפתור נגישות",
+  className: "draggableButtonNegishut",
+  id: "negishutDragBtn",
   style: {
-    width: "70px",
+    width: `${buttonSize}px`,
+    aspectRatio: "1/1",
     position: "fixed",
-    right: "90px",
-    top: `${window.innerHeight - 70}px`,
+    border: "3px solid white",
+    left: `${"x" in negishutPos ? negishutPos["x"] : "90"}px`,
+    top: `${"y" in negishutPos ? negishutPos["y"] : window.innerHeight - 70}px`,
     backgroundColor: "#007BFF",
     color: "white",
     borderRadius: "5px",
@@ -28,50 +41,39 @@ const dragBtnOpt = {
   draggable: true,
 };
 
-const imageOpt = {
-  src: "./assets/wheel.svg",
+const imageOpt: JsEl = {
   style: {
     width: "100%",
     margin: "0px",
   },
 };
-const roadOpt = {
+const roadOpt: JsEl = {
   style: {
-    width: "15px",
-    height: "2px",
-    left: "75px",
+    width: "20%",
+    height: "3%",
+    left: "100%",
     backgroundColor: "white",
     borderRadius: "20%",
     position: "absolute",
-    bottom: "1px",
+    bottom: "13%",
   },
 };
-let roadMove = 0;
-
-setInterval(() => {
-  road1.style.transform = `translateX(${roadMove}px)`;
-  road2.style.transform = `translateX(${(roadMove - 22) % 90}px)`;
-  road3.style.transform = `translateX(${(roadMove - 45) % 90}px)`;
-  road4.style.transform = `translateX(${(roadMove - 68) % 90}px)`;
-  roadMove = (roadMove - 2) % 90;
-}, 100);
-js2Style(draggableButton, dragBtnOpt);
-js2Style(image, imageOpt);
-js2Style(road1, roadOpt);
-js2Style(road2, roadOpt);
-js2Style(road3, roadOpt);
-js2Style(road4, roadOpt);
+jsToStyle(draggableButton, dragBtnOpt);
+jsToStyle(image, imageOpt);
+jsToStyle(road1, roadOpt);
+jsToStyle(road2, roadOpt);
+jsToStyle(road3, roadOpt);
+jsToStyle(road4, roadOpt);
+image.appendChild(cases);
 draggableButton.append(image);
 
 draggableButton.append(road1, road2, road3, road4);
 const startDrag = (event: TouchEvent | MouseEvent) => {
   // Prevent the default action, like text selection
   event.preventDefault();
-
   // Get the initial mouse position
   const clientX = "touches" in event ? event.touches[0].clientX : event.clientX;
   const clientY = "touches" in event ? event.touches[0].clientY : event.clientY;
-
   // Set the initial offsets for dragging
   offsetX = clientX - draggableButton.getBoundingClientRect().left;
   offsetY = clientY - draggableButton.getBoundingClientRect().top;
@@ -90,24 +92,27 @@ const startDrag = (event: TouchEvent | MouseEvent) => {
 // Drag the button by updating its position
 const drag = (event: TouchEvent | MouseEvent) => {
   if (!isDragging) return;
+  setIsDragged(true);
 
   // Get the mouse position
   const clientX = "touches" in event ? event.touches[0].clientX : event.clientX;
   const clientY = "touches" in event ? event.touches[0].clientY : event.clientY;
 
   // Calculate new position
-  const x = clientX - offsetX;
-  const y = clientY - offsetY;
-
+  xForBackup = clientX - offsetX;
+  yForBackup = clientY - offsetY;
   // Move the button to the new position
   //   draggableButton.style.position = "fixed"; // Make sure the button is fixed positioned
-  draggableButton.style.left = `${x}px`;
-  draggableButton.style.top = `${y}px`;
+  draggableButton.style.left = `${xForBackup}px`;
+  draggableButton.style.top = `${yForBackup}px`;
 };
 
 // Stop dragging when mouse up or touch end
 const stopDrag = () => {
   if (!isDragging) return;
+  negishutPos["x"] = xForBackup;
+  negishutPos["y"] = yForBackup;
+  localStorage.setItem("NegishutPos", JSON.stringify(negishutPos));
 
   // Reset dragging flag
   isDragging = false;
@@ -121,6 +126,13 @@ const stopDrag = () => {
   // Reset cursor to default
   draggableButton.style.cursor = "grab";
 };
+
+addEventListener("keydown", (event) => {
+  if (event.altKey && event.code == "KeyA") {
+    event.preventDefault();
+    draggableButton.click();
+  }
+});
 
 // Add event listeners to start dragging on mouse down or touch start
 draggableButton.addEventListener("mousedown", startDrag);

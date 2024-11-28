@@ -1,17 +1,9 @@
-"use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.createOptionsEl = exports.resetBtnPos = exports.openSidBar = exports.sidebarOpen = exports.pushStyle = exports.js2Style = void 0;
-const draggableButton_1 = __importDefault(require("./draggableButton"));
-const sidebar_1 = __importDefault(require("./sidebar"));
-HTMLElement;
-const js2Style = (el, js, sub = null) => {
+import { buttonSize, draggableButton, getIsDragged, road1, road2, road3, road4, setIsDragged, sidebar, wheel, } from "./elements";
+export const jsToStyle = (el, js, sub = null) => {
     Object.keys(js).forEach((key) => {
         const typedKey = key;
         if (js[typedKey] instanceof Object) {
-            (0, exports.js2Style)(el, js[typedKey], typedKey);
+            jsToStyle(el, js[typedKey], typedKey);
         }
         else if (sub == null) {
             el[typedKey] = js[typedKey];
@@ -21,29 +13,43 @@ const js2Style = (el, js, sub = null) => {
         }
     });
 };
-exports.js2Style = js2Style;
-const pushStyle = (styleEl, styleObj) => {
+export const pushStyle = (styleEl, styleObj) => {
     styleEl.innerHTML = Object.values(styleObj).join(" ");
 };
-exports.pushStyle = pushStyle;
-exports.sidebarOpen = false;
-const openSidBar = () => {
-    if (!exports.sidebarOpen) {
-        sidebar_1.default.style.left = "0"; // Slide in the sidebar
-        exports.sidebarOpen = true;
+let deg = 0;
+let roadMove = 0;
+setInterval(() => {
+    if (sidebarOpen) {
+        wheel.style.transform = `rotate(${deg}deg)`;
+        deg = (deg + 10) % 360;
+        road1.style.transform = `translateX(${roadMove}px)`;
+        road2.style.transform = `translateX(${(roadMove - buttonSize * 0.25) % buttonSize}px)`;
+        road3.style.transform = `translateX(${(roadMove - buttonSize * 0.5) % buttonSize}px)`;
+        road4.style.transform = `translateX(${(roadMove - buttonSize * 0.75) % buttonSize}px)`;
+        roadMove = (roadMove - buttonSize * 0.04) % buttonSize;
+    }
+}, 100);
+export let sidebarOpen = false;
+export const openSidBar = () => {
+    if (getIsDragged()) {
+        setIsDragged(false);
+        return;
+    }
+    if (!sidebarOpen) {
+        sidebar.style.left = "0"; // Slide in the sidebar
+        sidebarOpen = true;
+        sidebar.click();
     }
     else {
-        sidebar_1.default.style.left = `-${sidebar_1.default.offsetWidth}px`; // Hide the sidebar
-        exports.sidebarOpen = false;
+        sidebar.style.left = `-${sidebar.offsetWidth}px`; // Hide the sidebar
+        sidebarOpen = false;
     }
 };
-exports.openSidBar = openSidBar;
-const resetBtnPos = () => {
-    draggableButton_1.default.style.right = "5px";
-    draggableButton_1.default.style.top = `${window.innerHeight - 70}px`;
+export const resetBtnPos = () => {
+    draggableButton.style.left = "20px";
+    draggableButton.style.top = `${window.innerHeight - 90}px`;
 };
-exports.resetBtnPos = resetBtnPos;
-const createOptionsEl = (elOptions) => {
+export const createOptionsEl = (elOptions) => {
     return elOptions.map((el) => {
         const opt = document.createElement("option");
         opt.value = el.value;
@@ -51,4 +57,3 @@ const createOptionsEl = (elOptions) => {
         return opt;
     });
 };
-exports.createOptionsEl = createOptionsEl;

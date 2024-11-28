@@ -1,9 +1,5 @@
-interface jsEl {
-    style?: Partial<CSSStyleDeclaration>;
-    innerHTML?: string;
-    id?: string;
-}
-export declare const js2Style: (el: HTMLElement, js: jsEl, sub?: null | string) => void;
+import { JsEl } from "./global";
+export declare const jsToStyle: (el: HTMLElement, js: JsEl, sub?: null | string) => void;
 export declare const pushStyle: (styleEl: HTMLStyleElement, styleObj: {
     [key: string]: string;
 }) => void;
@@ -14,4 +10,3 @@ export declare const createOptionsEl: (elOptions: {
     value: string;
     textContent: string;
 }[]) => HTMLOptionElement[];
-export {};

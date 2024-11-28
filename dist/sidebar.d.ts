@@ -1,2 +1,2 @@
-declare const sidebar: HTMLDivElement;
+import { sidebar } from "./elements";
 export default sidebar;
