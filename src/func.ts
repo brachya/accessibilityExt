@@ -1,3 +1,4 @@
+import { Node } from "typescript";
 import {
   buttonSize,
   draggableButton,
@@ -76,19 +77,22 @@ export const openSideBar = () => {
     return;
   }
   if (!sidebarOpen) {
-    sidebar.style.left = "0"; // Slide in the sidebar
-    sidebarOpen = true;
+    sidebar.style.display = "block";
+    setTimeout(() => {
+      sidebar.style.left = "0"; // Slide in the sidebar
+      sidebarOpen = true;
+    }, 100);
 
     move.innerHTML = "";
-    move.append(...createOptionsEl(moveOptions));
+    move.append(...(createOptionsEl(moveOptions) as HTMLOptionElement[]));
     (sidebar.children[0] as HTMLButtonElement).focus();
   } else {
     sidebar.style.left = `-${sidebar.offsetWidth}px`; // Hide the sidebar
     sidebarOpen = false;
+    setTimeout(() => {
+      sidebar.style.display = "none";
+    }, 300);
   }
-  setTimeout(() => {
-    sidebar.style.display = sidebarOpen ? "block" : "none";
-  }, 300);
 };
 export const resetBtnPos = () => {
   draggableButton.style.left = "20px";
@@ -135,19 +139,23 @@ const readText = (text: string) => {
   }
   speechSynthesis.speak(speaker);
 };
-const getElementText = (element) => {
+const getElementText = (element: HTMLElement): string => {
   if (element.tagName === "INPUT" || element.tagName === "TEXTAREA") {
-    return element.value || element.placeholder || null;
+    return (
+      (element as HTMLTextAreaElement).value ||
+      (element as HTMLInputElement).placeholder ||
+      "אין טקסט"
+    );
   }
 
   return (
     element.getAttribute("aria-label") ||
     element.getAttribute("alt") ||
     element.innerText ||
-    element.textContext ||
+    element.textContent ||
     "אין טקסט"
   );
 };
-export const readMe = (event) => {
-  readText(getElementText(event.target));
+export const readMe = (event: FocusEvent): void => {
+  readText(getElementText(event.target as HTMLElement));
 };

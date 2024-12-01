@@ -1,27 +1,56 @@
+// // {
+// //   "compilerOptions": {
+// //     "module": "ESNext" /* Specify what module code is generated. */,
+// //     "target": "ES6" /* Set the JavaScript language version for emitted JavaScript and include compatible library declarations. */,
+// //     "moduleResolution": "node",
+// //     "outDir": "./dist" /* Specify an output folder for all emitted files. */,
+// //     "esModuleInterop": true /* Emit additional JavaScript to ease support for importing CommonJS modules. This enables 'allowSyntheticDefaultImports' for type compatibility. */,
+// //     "declaration": true /* Generate .d.ts files from TypeScript and JavaScript files in your project. */
+// //     // "forceConsistentCasingInFileNames": true /* Ensure that casing is correct in imports. */,
+// //     // "strict": true /* Enable all strict type-checking options. */,
+// //     // "skipLibCheck": true /* Skip type checking all .d.ts files. */,
+// //   },
+// //   "include": ["src/**/*"],
+// //   "exclude": ["node_modules", "dist"]
+// // }
 // {
 //   "compilerOptions": {
-//     "module": "ESNext" /* Specify what module code is generated. */,
-//     "target": "ES6" /* Set the JavaScript language version for emitted JavaScript and include compatible library declarations. */,
+//     "module": "ESNext", // Output ES Modules
+//     "target": "ES6", // Use ES6 JavaScript
 //     "moduleResolution": "node",
-//     "outDir": "./dist" /* Specify an output folder for all emitted files. */,
-//     "esModuleInterop": true /* Emit additional JavaScript to ease support for importing CommonJS modules. This enables 'allowSyntheticDefaultImports' for type compatibility. */,
-//     "declaration": true /* Generate .d.ts files from TypeScript and JavaScript files in your project. */
-//     // "forceConsistentCasingInFileNames": true /* Ensure that casing is correct in imports. */,
-//     // "strict": true /* Enable all strict type-checking options. */,
-//     // "skipLibCheck": true /* Skip type checking all .d.ts files. */,
+//     "outDir": "./dist", // Output compiled files to dist folder
+//     "esModuleInterop": true, // Ensures compatibility between CommonJS and ES Module imports
+//     "declaration": true, // Generates .d.ts files for type declarations
+//     "allowJs": true // Allow JavaScript files in the project if necessary
 //   },
-//   "include": ["src/**/*"],
-//   "exclude": ["node_modules", "dist"]
+//   "include": ["src/**/*"]
 // }
 {
+  // "compilerOptions": {
+  //   "target": "ESNext",
+  //   "module": "ESNext",
+  //   "outDir": "./dist",
+  //   "declaration": true, // Generate .d.ts files
+  //   "declarationMap": true, // (Optional) Generate source maps for declarations
+  //   "emitDeclarationOnly": false, // Emit both .js and .d.ts files
+  //   "strict": true,
+  //   "moduleResolution": "node",
+  //   "esModuleInterop": true,
+  //   "skipLibCheck": true,
+  //   "forceConsistentCasingInFileNames": true
+  // },
   "compilerOptions": {
-    "module": "ESNext", // Output ES Modules
-    "target": "ES6", // Use ES6 JavaScript
-    "moduleResolution": "node",
-    "outDir": "./dist", // Output compiled files to dist folder
-    "esModuleInterop": true, // Ensures compatibility between CommonJS and ES Module imports
-    "declaration": true, // Generates .d.ts files for type declarations
-    "allowJs": true // Allow JavaScript files in the project if necessary
+    "target": "ESNext", // Target ECMAScript version
+    "module": "CommonJS", // Or "ESNext" for ESM
+    "outDir": "./dist", // Output directory for compiled files
+    "rootDir": "./src", // Root directory of input files
+    "declaration": true, // Generate .d.ts files
+    "sourceMap": false, // Disable or enable source maps
+    "strict": true, // Enable all strict type-checking options
+    "esModuleInterop": true, // Ensure compatibility with CommonJS
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true
   },
-  "include": ["src/**/*"]
+  "include": ["src/**/*"], // Include all files in the src directory
+  "exclude": ["node_modules", "dist"] // Exclude unnecessary files
 }

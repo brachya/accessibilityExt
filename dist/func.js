@@ -1,9 +1,12 @@
-import { buttonSize, draggableButton, getIsDragged, move, road1, road2, road3, road4, setIsDragged, sidebar, wheel, } from "./elements";
-export const jsToStyle = (el, js, sub = null) => {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.readMe = exports.createOptionsEl = exports.resetBtnPos = exports.openSideBar = exports.sidebarOpen = exports.pushStyle = exports.jsToStyle = void 0;
+const elements_1 = require("./elements");
+const jsToStyle = (el, js, sub = null) => {
     Object.keys(js).forEach((key) => {
         const typedKey = key;
         if (js[typedKey] instanceof Object) {
-            jsToStyle(el, js[typedKey], typedKey);
+            (0, exports.jsToStyle)(el, js[typedKey], typedKey);
         }
         else if (sub == null) {
             el[typedKey] = js[typedKey];
@@ -13,20 +16,22 @@ export const jsToStyle = (el, js, sub = null) => {
         }
     });
 };
-export const pushStyle = (styleEl, styleObj) => {
+exports.jsToStyle = jsToStyle;
+const pushStyle = (styleEl, styleObj) => {
     styleEl.innerHTML = Object.values(styleObj).join(" ");
 };
+exports.pushStyle = pushStyle;
 let deg = 0;
 let roadMove = 0;
 setInterval(() => {
-    if (sidebarOpen) {
-        wheel.style.transform = `rotate(${deg}deg)`;
+    if (exports.sidebarOpen) {
+        elements_1.wheel.style.transform = `rotate(${deg}deg)`;
         deg = (deg + 10) % 359;
-        road1.style.transform = `translateX(${roadMove}px)`;
-        road2.style.transform = `translateX(${(roadMove - buttonSize * 0.25) % buttonSize}px)`;
-        road3.style.transform = `translateX(${(roadMove - buttonSize * 0.5) % buttonSize}px)`;
-        road4.style.transform = `translateX(${(roadMove - buttonSize * 0.75) % buttonSize}px)`;
-        roadMove = (roadMove - buttonSize * 0.04) % buttonSize;
+        elements_1.road1.style.transform = `translateX(${roadMove}px)`;
+        elements_1.road2.style.transform = `translateX(${(roadMove - elements_1.buttonSize * 0.25) % elements_1.buttonSize}px)`;
+        elements_1.road3.style.transform = `translateX(${(roadMove - elements_1.buttonSize * 0.5) % elements_1.buttonSize}px)`;
+        elements_1.road4.style.transform = `translateX(${(roadMove - elements_1.buttonSize * 0.75) % elements_1.buttonSize}px)`;
+        roadMove = (roadMove - elements_1.buttonSize * 0.04) % elements_1.buttonSize;
     }
 }, 100);
 const moveOptions = [
@@ -39,33 +44,38 @@ const moveOptions = [
     { value: "middle", textContent: "מרכז" },
     { value: "bottom", textContent: "תחתית הדף" },
 ];
-const focusableElements = sidebar.querySelectorAll("button, a, select, [tabindex]");
-export let sidebarOpen = false;
-export const openSideBar = () => {
-    if (getIsDragged()) {
-        setIsDragged(false);
+const focusableElements = elements_1.sidebar.querySelectorAll("button, a, select, [tabindex]");
+exports.sidebarOpen = false;
+const openSideBar = () => {
+    if ((0, elements_1.getIsDragged)()) {
+        (0, elements_1.setIsDragged)(false);
         return;
     }
-    if (!sidebarOpen) {
-        sidebar.style.left = "0"; // Slide in the sidebar
-        sidebarOpen = true;
-        move.innerHTML = "";
-        move.append(...createOptionsEl(moveOptions));
-        sidebar.children[0].focus();
+    if (!exports.sidebarOpen) {
+        elements_1.sidebar.style.display = "block";
+        setTimeout(() => {
+            elements_1.sidebar.style.left = "0"; // Slide in the sidebar
+            exports.sidebarOpen = true;
+        }, 100);
+        elements_1.move.innerHTML = "";
+        elements_1.move.append(...(0, exports.createOptionsEl)(moveOptions));
+        elements_1.sidebar.children[0].focus();
     }
     else {
-        sidebar.style.left = `-${sidebar.offsetWidth}px`; // Hide the sidebar
-        sidebarOpen = false;
+        elements_1.sidebar.style.left = `-${elements_1.sidebar.offsetWidth}px`; // Hide the sidebar
+        exports.sidebarOpen = false;
+        setTimeout(() => {
+            elements_1.sidebar.style.display = "none";
+        }, 300);
     }
-    setTimeout(() => {
-        sidebar.style.display = sidebarOpen ? "block" : "none";
-    }, 300);
 };
-export const resetBtnPos = () => {
-    draggableButton.style.left = "20px";
-    draggableButton.style.top = `${window.innerHeight - 90}px`;
+exports.openSideBar = openSideBar;
+const resetBtnPos = () => {
+    elements_1.draggableButton.style.left = "20px";
+    elements_1.draggableButton.style.top = `${window.innerHeight - 90}px`;
 };
-export const createOptionsEl = (elOptions) => {
+exports.resetBtnPos = resetBtnPos;
+const createOptionsEl = (elOptions) => {
     return elOptions.map((el) => {
         const opt = document.createElement("option");
         const find = document.querySelector(el.value);
@@ -76,6 +86,7 @@ export const createOptionsEl = (elOptions) => {
         }
     });
 };
+exports.createOptionsEl = createOptionsEl;
 const detectLanguage = (text) => {
     if (/[\u0590-\u05FF]/.test(text)) {
         return "he-IL";
@@ -106,14 +117,17 @@ const readText = (text) => {
 };
 const getElementText = (element) => {
     if (element.tagName === "INPUT" || element.tagName === "TEXTAREA") {
-        return element.value || element.placeholder || null;
+        return (element.value ||
+            element.placeholder ||
+            "אין טקסט");
     }
     return (element.getAttribute("aria-label") ||
         element.getAttribute("alt") ||
         element.innerText ||
-        element.textContext ||
+        element.textContent ||
         "אין טקסט");
 };
-export const readMe = (event) => {
+const readMe = (event) => {
     readText(getElementText(event.target));
 };
+exports.readMe = readMe;

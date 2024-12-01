@@ -1,16 +1,20 @@
-var _a;
-export const sidebar = document.createElement("div");
-export const draggableButton = document.createElement("button");
-export const wheel = document.createElement("div");
-export const road1 = document.createElement("div");
-export const road2 = document.createElement("div");
-export const road3 = document.createElement("div");
-export const road4 = document.createElement("div");
-export const negishutPos = (_a = JSON.parse(localStorage.getItem("NegishutPos"))) !== null && _a !== void 0 ? _a : {};
-export let buttonSize = 70;
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.move = exports.setIsDragged = exports.getIsDragged = exports.buttonSize = exports.negishutPos = exports.road4 = exports.road3 = exports.road2 = exports.road1 = exports.wheel = exports.draggableButton = exports.sidebar = void 0;
+exports.sidebar = document.createElement("div");
+exports.draggableButton = document.createElement("button");
+exports.wheel = document.createElement("div");
+exports.road1 = document.createElement("div");
+exports.road2 = document.createElement("div");
+exports.road3 = document.createElement("div");
+exports.road4 = document.createElement("div");
+exports.negishutPos = JSON.parse(localStorage.getItem("NegishutPos") ?? "{}");
+exports.buttonSize = 70;
 let isDragged = false;
-export const getIsDragged = () => isDragged;
-export const setIsDragged = (changeTo) => {
+const getIsDragged = () => isDragged;
+exports.getIsDragged = getIsDragged;
+const setIsDragged = (changeTo) => {
     isDragged = changeTo;
 };
-export const move = document.createElement("select");
+exports.setIsDragged = setIsDragged;
+exports.move = document.createElement("select");

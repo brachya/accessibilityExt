@@ -9,5 +9,5 @@ export declare const resetBtnPos: () => void;
 export declare const createOptionsEl: (elOptions: {
     value: string;
     textContent: string;
-}[]) => HTMLOptionElement[];
-export declare const readMe: (event: any) => void;
+}[]) => (HTMLOptionElement | undefined)[];
+export declare const readMe: (event: FocusEvent) => void;

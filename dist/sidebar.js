@@ -1,5 +1,7 @@
-import { move, negishutPos, sidebar } from "./elements";
-import { jsToStyle, openSideBar, pushStyle, readMe } from "./func";
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const elements_1 = require("./elements");
+const func_1 = require("./func");
 const style = document.createElement("style");
 const closeBtn = document.createElement("button");
 const textBigger = document.createElement("button");
@@ -29,7 +31,6 @@ const filterStrength = {
 };
 let chosen = null; // for letting the user choose only one option
 const chooseOnlyMe = (event) => {
-    var _a;
     const eventBtn = event.target;
     const { id } = eventBtn;
     if (chosen && id != chosen) {
@@ -37,17 +38,17 @@ const chooseOnlyMe = (event) => {
     }
     if (preStyle.filter == "") {
         chosen = id;
-        preStyle["filter"] = `html{filter:${id == "sepiaHue" ? "sepia" : id}(${filterStrength[id]["strength"]}%) ${(_a = filterStrength[id]["addition"]) !== null && _a !== void 0 ? _a : ""} !important;}`;
-        negishutPos["filter"] = id;
-        localStorage.setItem("NegishutPos", JSON.stringify(negishutPos));
+        preStyle["filter"] = `html{filter:${id == "sepiaHue" ? "sepia" : id}(${filterStrength[id]["strength"]}%) ${filterStrength[id]["addition"] ?? ""} !important;}`;
+        elements_1.negishutPos["filter"] = id;
+        localStorage.setItem("NegishutPos", JSON.stringify(elements_1.negishutPos));
     }
     else {
-        delete negishutPos["filter"];
-        localStorage.setItem("NegishutPos", JSON.stringify(negishutPos));
+        delete elements_1.negishutPos["filter"];
+        localStorage.setItem("NegishutPos", JSON.stringify(elements_1.negishutPos));
         preStyle["filter"] = "";
         chosen = null;
     }
-    pushStyle(style, preStyle);
+    (0, func_1.pushStyle)(style, preStyle);
     eventBtn.classList.toggle("checkedByNegishut");
 };
 let textSize = 10;
@@ -158,7 +159,7 @@ animation-duration:1s;
 }
 `,
 };
-pushStyle(style, preStyle);
+(0, func_1.pushStyle)(style, preStyle);
 const sidebarOpt = {
     id: "sidebar",
     style: {
@@ -179,8 +180,8 @@ const sidebarOpt = {
         scrollbarWidth: "none",
     },
 };
-jsToStyle(sidebar, sidebarOpt);
-sidebar.tabIndex = 0;
+(0, func_1.jsToStyle)(elements_1.sidebar, sidebarOpt);
+elements_1.sidebar.tabIndex = 0;
 const uniqueName = (cssOpt, name, id) => {
     cssOpt["innerHTML"] = name;
     cssOpt["id"] = id;
@@ -256,96 +257,99 @@ const moveHeaderOpt = {
         fontSize: "large",
     },
 };
-jsToStyle(moveBox, Object.assign(Object.assign({}, btnOpt), { style: Object.assign(Object.assign({}, btnOpt["style"]), moveBoxOpt["style"]) }));
-jsToStyle(moveHeader, moveHeaderOpt);
-moveBox.append(moveHeader, move);
-jsToStyle(closeBtn, closeBtnOpt);
+(0, func_1.jsToStyle)(moveBox, {
+    ...btnOpt,
+    style: { ...btnOpt["style"], ...moveBoxOpt["style"] },
+});
+(0, func_1.jsToStyle)(moveHeader, moveHeaderOpt);
+moveBox.append(moveHeader, elements_1.move);
+(0, func_1.jsToStyle)(closeBtn, closeBtnOpt);
 closeBtn.autofocus = true;
 // Add event listener to close button
-closeBtn.addEventListener("click", openSideBar);
+closeBtn.addEventListener("click", func_1.openSideBar);
 // Append close button and menu to sidebar
-jsToStyle(textBigger, uniqueName(btnOpt, "+", "textSizeBigger"));
+(0, func_1.jsToStyle)(textBigger, uniqueName(btnOpt, "+", "textSizeBigger"));
 textBigger.ariaLabel = "הגדלת טקסט";
 textBigger.addEventListener("click", () => {
     preStyle["text"] = `* {
     font-size: ${++textSize}px !important;
   }
   `;
-    negishutPos["text"] = textSize;
-    localStorage.setItem("NegishutPos", JSON.stringify(negishutPos));
-    pushStyle(style, preStyle);
+    elements_1.negishutPos["text"] = textSize;
+    localStorage.setItem("NegishutPos", JSON.stringify(elements_1.negishutPos));
+    (0, func_1.pushStyle)(style, preStyle);
 });
-jsToStyle(textSmaller, uniqueName(btnOpt, "-", "textSizeSmaller"));
+(0, func_1.jsToStyle)(textSmaller, uniqueName(btnOpt, "-", "textSizeSmaller"));
 textSmaller.ariaLabel = "הקטנת טקסט";
 textSmaller.addEventListener("click", () => {
     preStyle["text"] = `* {
     font-size: ${--textSize}px !important;
   }
   `;
-    negishutPos["text"] = textSize;
-    localStorage.setItem("NegishutPos", JSON.stringify(negishutPos));
-    pushStyle(style, preStyle);
+    elements_1.negishutPos["text"] = textSize;
+    localStorage.setItem("NegishutPos", JSON.stringify(elements_1.negishutPos));
+    (0, func_1.pushStyle)(style, preStyle);
 });
-jsToStyle(textReset, uniqueName(btnOpt, "X", "textSizeReset"));
+(0, func_1.jsToStyle)(textReset, uniqueName(btnOpt, "X", "textSizeReset"));
 textReset.ariaLabel = "איפוס גודל טקסט";
 textReset.addEventListener("click", () => {
     preStyle["text"] = "";
-    delete negishutPos["text"];
-    localStorage.setItem("NegishutPos", JSON.stringify(negishutPos));
-    pushStyle(style, preStyle);
+    delete elements_1.negishutPos["text"];
+    localStorage.setItem("NegishutPos", JSON.stringify(elements_1.negishutPos));
+    (0, func_1.pushStyle)(style, preStyle);
 });
-jsToStyle(hyperBold, uniqueName(btnOpt, "קישור", "hyperBold"));
+(0, func_1.jsToStyle)(hyperBold, uniqueName(btnOpt, "קישור", "hyperBold"));
 hyperBold.addEventListener("click", () => {
     if (preStyle.hyper == "") {
         preStyle["hyper"] = `a{
     font-weight:900 !important;
     border:2px solid red !important;
     }`;
-        pushStyle(style, preStyle);
+        (0, func_1.pushStyle)(style, preStyle);
         hyperBold.classList.add("checkedByNegishut");
-        negishutPos["hyper"] = true;
-        localStorage.setItem("NegishutPos", JSON.stringify(negishutPos));
+        elements_1.negishutPos["hyper"] = true;
+        localStorage.setItem("NegishutPos", JSON.stringify(elements_1.negishutPos));
     }
     else {
         preStyle["hyper"] = "";
-        pushStyle(style, preStyle);
+        (0, func_1.pushStyle)(style, preStyle);
         hyperBold.classList.remove("checkedByNegishut");
-        delete negishutPos["hyper"];
-        localStorage.setItem("NegishutPos", JSON.stringify(negishutPos));
+        delete elements_1.negishutPos["hyper"];
+        localStorage.setItem("NegishutPos", JSON.stringify(elements_1.negishutPos));
     }
 });
-jsToStyle(headersBold, uniqueName(btnOpt, "כותרת", "headersBold"));
+(0, func_1.jsToStyle)(headersBold, uniqueName(btnOpt, "כותרת", "headersBold"));
 headersBold.addEventListener("click", () => {
     if (preStyle.headers == "") {
         preStyle["headers"] = `h1,h2,h3,h4,h5,h6,h7{
       font-weight:900 !important;
     border:2px solid red !important;}`;
-        pushStyle(style, preStyle);
+        (0, func_1.pushStyle)(style, preStyle);
         headersBold.classList.add("checkedByNegishut");
-        negishutPos["headers"] = true;
-        localStorage.setItem("NegishutPos", JSON.stringify(negishutPos));
+        elements_1.negishutPos["headers"] = true;
+        localStorage.setItem("NegishutPos", JSON.stringify(elements_1.negishutPos));
     }
     else {
         preStyle["headers"] = "";
-        pushStyle(style, preStyle);
-        delete negishutPos["headers"];
-        localStorage.setItem("NegishutPos", JSON.stringify(negishutPos));
+        (0, func_1.pushStyle)(style, preStyle);
+        delete elements_1.negishutPos["headers"];
+        localStorage.setItem("NegishutPos", JSON.stringify(elements_1.negishutPos));
         headersBold.classList.remove("checkedByNegishut");
     }
 });
-jsToStyle(grayScale, uniqueName(btnOpt, "עיוור צבעים", "grayscale"));
+(0, func_1.jsToStyle)(grayScale, uniqueName(btnOpt, "עיוור צבעים", "grayscale"));
 grayScale.addEventListener("click", chooseOnlyMe);
-jsToStyle(invertColors, uniqueName(btnOpt, "כבדי ראיה", "invert"));
+(0, func_1.jsToStyle)(invertColors, uniqueName(btnOpt, "כבדי ראיה", "invert"));
 invertColors.addEventListener("click", chooseOnlyMe);
-jsToStyle(brightness, uniqueName(btnOpt, "בהירות גבוהה", "brightness"));
+(0, func_1.jsToStyle)(brightness, uniqueName(btnOpt, "בהירות גבוהה", "brightness"));
 brightness.addEventListener("click", chooseOnlyMe);
-jsToStyle(sepia, uniqueName(btnOpt, "אור כחול", "sepia"));
+(0, func_1.jsToStyle)(sepia, uniqueName(btnOpt, "אור כחול", "sepia"));
 sepia.addEventListener("click", chooseOnlyMe);
-jsToStyle(saturate, uniqueName(btnOpt, "צבעים עזים", "saturate"));
+(0, func_1.jsToStyle)(saturate, uniqueName(btnOpt, "צבעים עזים", "saturate"));
 saturate.addEventListener("click", chooseOnlyMe);
-jsToStyle(sepiaHue, uniqueName(btnOpt, "צבעים קרים", "sepiaHue"));
+(0, func_1.jsToStyle)(sepiaHue, uniqueName(btnOpt, "צבעים קרים", "sepiaHue"));
 sepiaHue.addEventListener("click", chooseOnlyMe);
-jsToStyle(focus, uniqueName(btnOpt, "הדגשה", "focus"));
+(0, func_1.jsToStyle)(focus, uniqueName(btnOpt, "הדגשה", "focus"));
 focus.addEventListener("click", (event) => {
     const eventBtn = event.target;
     if (preStyle["focus"] == "") {
@@ -355,18 +359,18 @@ focus.addEventListener("click", (event) => {
         border: 4px solid red !important;
         }`;
         eventBtn.classList.add("checkedByNegishut");
-        negishutPos["focus"] = true;
-        localStorage.setItem("NegishutPos", JSON.stringify(negishutPos));
+        elements_1.negishutPos["focus"] = true;
+        localStorage.setItem("NegishutPos", JSON.stringify(elements_1.negishutPos));
     }
     else {
         preStyle["focus"] = "";
-        delete negishutPos["focus"];
-        localStorage.setItem("NegishutPos", JSON.stringify(negishutPos));
+        delete elements_1.negishutPos["focus"];
+        localStorage.setItem("NegishutPos", JSON.stringify(elements_1.negishutPos));
         eventBtn.classList.remove("checkedByNegishut");
     }
-    pushStyle(style, preStyle);
+    (0, func_1.pushStyle)(style, preStyle);
 });
-jsToStyle(font, uniqueName(btnOpt, "שינוי פונט", "font"));
+(0, func_1.jsToStyle)(font, uniqueName(btnOpt, "שינוי פונט", "font"));
 font.addEventListener("click", (event) => {
     const eventBtn = event.target;
     if (preStyle["font"] == "") {
@@ -375,18 +379,18 @@ font.addEventListener("click", (event) => {
     font-family: Arial, Helvetica, sans-serif !important;
     }`;
         eventBtn.classList.add("checkedByNegishut");
-        negishutPos["font"] = true;
-        localStorage.setItem("NegishutPos", JSON.stringify(negishutPos));
+        elements_1.negishutPos["font"] = true;
+        localStorage.setItem("NegishutPos", JSON.stringify(elements_1.negishutPos));
     }
     else {
         preStyle["font"] = "";
         eventBtn.classList.remove("checkedByNegishut");
-        delete negishutPos["font"];
-        localStorage.setItem("NegishutPos", JSON.stringify(negishutPos));
+        delete elements_1.negishutPos["font"];
+        localStorage.setItem("NegishutPos", JSON.stringify(elements_1.negishutPos));
     }
-    pushStyle(style, preStyle);
+    (0, func_1.pushStyle)(style, preStyle);
 });
-jsToStyle(pauseAnimate, uniqueName(btnOpt, "השהה אנימציות", "pauseAnimate"));
+(0, func_1.jsToStyle)(pauseAnimate, uniqueName(btnOpt, "השהה אנימציות", "pauseAnimate"));
 pauseAnimate.addEventListener("click", (event) => {
     const eventBtn = event.target;
     if (preStyle["pauseAnimate"] == "") {
@@ -399,9 +403,10 @@ pauseAnimate.addEventListener("click", (event) => {
     `;
         eventBtn.classList.add("checkedByNegishut");
         const elements = document.querySelectorAll(".element");
-        elements.forEach((el) => {
-            const computedStyle = window.getComputedStyle(el);
+        elements.forEach((element) => {
+            const computedStyle = window.getComputedStyle(element);
             const transform = computedStyle.transform;
+            const el = element;
             // הפסקת האנימציה
             el.style.animation = "none";
             // החלת מצב הסופי
@@ -409,46 +414,46 @@ pauseAnimate.addEventListener("click", (event) => {
                 el.style.transform = transform;
             }
         });
-        negishutPos["pauseAnimate"] = true;
-        localStorage.setItem("NegishutPos", JSON.stringify(negishutPos));
+        elements_1.negishutPos["pauseAnimate"] = true;
+        localStorage.setItem("NegishutPos", JSON.stringify(elements_1.negishutPos));
     }
     else {
         preStyle["pauseAnimate"] = "";
         eventBtn.classList.remove("checkedByNegishut");
-        delete negishutPos["pauseAnimate"];
-        localStorage.setItem("NegishutPos", JSON.stringify(negishutPos));
+        delete elements_1.negishutPos["pauseAnimate"];
+        localStorage.setItem("NegishutPos", JSON.stringify(elements_1.negishutPos));
     }
-    pushStyle(style, preStyle);
+    (0, func_1.pushStyle)(style, preStyle);
 });
 let readActive = false;
-jsToStyle(speaker, uniqueName(btnOpt, "קורא מסך", "speaker"));
+(0, func_1.jsToStyle)(speaker, uniqueName(btnOpt, "קורא מסך", "speaker"));
 speaker.addEventListener("click", (event) => {
     const eventBtn = event.target;
     if (readActive) {
-        removeEventListener("focusin", readMe);
-        delete negishutPos["speaker"];
-        localStorage.setItem("NegishutPos", JSON.stringify(negishutPos));
+        removeEventListener("focusin", func_1.readMe);
+        delete elements_1.negishutPos["speaker"];
+        localStorage.setItem("NegishutPos", JSON.stringify(elements_1.negishutPos));
         readActive = false;
         eventBtn.classList.remove("checkedByNegishut");
     }
     else {
-        addEventListener("focusin", readMe);
+        addEventListener("focusin", func_1.readMe);
         readActive = true;
         eventBtn.classList.add("checkedByNegishut");
-        negishutPos["speaker"] = true;
-        localStorage.setItem("NegishutPos", JSON.stringify(negishutPos));
+        elements_1.negishutPos["speaker"] = true;
+        localStorage.setItem("NegishutPos", JSON.stringify(elements_1.negishutPos));
     }
 });
 const intoRow = (...elements) => {
     const row = document.createElement("div");
-    jsToStyle(row, rowOpt);
+    (0, func_1.jsToStyle)(row, rowOpt);
     elements.forEach((el) => {
         row.appendChild(el);
     });
     return row;
 };
-jsToStyle(move, moveOpt);
-move.addEventListener("change", (event) => {
+(0, func_1.jsToStyle)(elements_1.move, moveOpt);
+elements_1.move.addEventListener("change", (event) => {
     const eventSelect = event.target;
     const { value } = eventSelect;
     const find = document.querySelector(value);
@@ -503,9 +508,9 @@ openStateBtn.addEventListener("click", () => {
 closeStateBtn.addEventListener("click", () => {
     statement.close();
 });
-jsToStyle(statement, statementOpt);
-jsToStyle(openStateBtn, uniqueName(closeBtnOpt, "הצהרת נגישות", "openStateBtn"));
-jsToStyle(closeStateBtn, uniqueName(closeBtnOpt, "סגור", "closeStateBtn"));
+(0, func_1.jsToStyle)(statement, statementOpt);
+(0, func_1.jsToStyle)(openStateBtn, uniqueName(closeBtnOpt, "הצהרת נגישות", "openStateBtn"));
+(0, func_1.jsToStyle)(closeStateBtn, uniqueName(closeBtnOpt, "סגור", "closeStateBtn"));
 statement.append(closeStateBtn, paragraphStatement);
 document.body.append(statement);
 document.head.append(style);
@@ -514,44 +519,44 @@ guide.innerText = `
 ALT+A לפתיחת וסגירת החלון נגישות
 פותח על ידי ברכיה יצחק שושן`;
 guide.style.fontSize = "large";
-sidebar.appendChild(intoRow(closeBtn, openStateBtn));
-sidebar.appendChild(intoRow(hyperBold, headersBold, font));
-sidebar.appendChild(intoRow(grayScale, invertColors, brightness));
-sidebar.appendChild(intoRow(saturate, sepiaHue, sepia));
-sidebar.appendChild(intoRow(textBigger, textSmaller, textReset));
-sidebar.appendChild(intoRow(focus, moveBox, pauseAnimate));
-sidebar.appendChild(intoRow(speaker));
-sidebar.appendChild(intoRow(guide));
+elements_1.sidebar.appendChild(intoRow(closeBtn, openStateBtn));
+elements_1.sidebar.appendChild(intoRow(hyperBold, headersBold, font));
+elements_1.sidebar.appendChild(intoRow(grayScale, invertColors, brightness));
+elements_1.sidebar.appendChild(intoRow(saturate, sepiaHue, sepia));
+elements_1.sidebar.appendChild(intoRow(textBigger, textSmaller, textReset));
+elements_1.sidebar.appendChild(intoRow(focus, moveBox, pauseAnimate));
+elements_1.sidebar.appendChild(intoRow(speaker));
+elements_1.sidebar.appendChild(intoRow(guide));
 const remember = () => {
-    if (negishutPos["text"]) {
-        textSize = negishutPos["text"];
+    if (elements_1.negishutPos["text"]) {
+        textSize = elements_1.negishutPos["text"];
         preStyle["text"] = `* {
       font-size: ${textSize}px !important;
     }
     `;
-        pushStyle(style, preStyle);
+        (0, func_1.pushStyle)(style, preStyle);
     }
-    if (negishutPos["headers"]) {
+    if (elements_1.negishutPos["headers"]) {
         headersBold.click();
     }
-    if (negishutPos["hyper"]) {
+    if (elements_1.negishutPos["hyper"]) {
         hyperBold.click();
     }
-    if (negishutPos["font"]) {
+    if (elements_1.negishutPos["font"]) {
         font.click();
     }
-    if (negishutPos["filter"]) {
-        filterStrength[negishutPos["filter"]].btn.click();
+    if (elements_1.negishutPos["filter"]) {
+        filterStrength[elements_1.negishutPos["filter"]].btn.click();
     }
-    if (negishutPos["pauseAnimate"]) {
+    if (elements_1.negishutPos["pauseAnimate"]) {
         pauseAnimate.click();
     }
-    if (negishutPos["focus"]) {
+    if (elements_1.negishutPos["focus"]) {
         focus.click();
     }
-    if (negishutPos["speaker"]) {
+    if (elements_1.negishutPos["speaker"]) {
         speaker.click();
     }
 };
 remember();
-export default sidebar;
+exports.default = elements_1.sidebar;

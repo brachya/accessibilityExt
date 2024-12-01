@@ -42,8 +42,10 @@ const chooseOnlyMe = (event: MouseEvent) => {
   if (preStyle.filter == "") {
     chosen = id as FilterStrengthKeys;
     preStyle["filter"] = `html{filter:${id == "sepiaHue" ? "sepia" : id}(${
-      filterStrength[id]["strength"]
-    }%) ${filterStrength[id]["addition"] ?? ""} !important;}`;
+      filterStrength[id as FilterStrengthKeys]["strength"]
+    }%) ${
+      filterStrength[id as FilterStrengthKeys]["addition"] ?? ""
+    } !important;}`;
     negishutPos["filter"] = id;
     localStorage.setItem("NegishutPos", JSON.stringify(negishutPos));
   } else {
@@ -419,10 +421,10 @@ pauseAnimate.addEventListener("click", (event) => {
     eventBtn.classList.add("checkedByNegishut");
     const elements = document.querySelectorAll(".element");
 
-    elements.forEach((el: HTMLElement) => {
-      const computedStyle = window.getComputedStyle(el);
+    elements.forEach((element: Element) => {
+      const computedStyle = window.getComputedStyle(element);
       const transform = computedStyle.transform;
-
+      const el = element as HTMLElement;
       // הפסקת האנימציה
       el.style.animation = "none";
 
@@ -570,7 +572,7 @@ const remember = () => {
     font.click();
   }
   if (negishutPos["filter"]) {
-    filterStrength[negishutPos["filter"]].btn.click();
+    filterStrength[negishutPos["filter"] as FilterStrengthKeys].btn.click();
   }
   if (negishutPos["pauseAnimate"]) {
     pauseAnimate.click();
