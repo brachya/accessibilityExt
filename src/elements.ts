@@ -5,6 +5,7 @@ export const road1 = document.createElement("div");
 export const road2 = document.createElement("div");
 export const road3 = document.createElement("div");
 export const road4 = document.createElement("div");
+export const statement = document.createElement("dialog");
 export const negishutPos = JSON.parse(
   localStorage.getItem("NegishutPos") ?? "{}"
 );

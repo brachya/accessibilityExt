@@ -1,4 +1,3 @@
-import { Node } from "typescript";
 import {
   buttonSize,
   draggableButton,
@@ -10,6 +9,7 @@ import {
   road4,
   setIsDragged,
   sidebar,
+  statement,
   wheel,
 } from "./elements";
 import { JsEl } from "./global";
@@ -39,7 +39,17 @@ export const pushStyle = (
 
 let deg = 0;
 let roadMove = 0;
+let modalNotReady = document.getElementById("negishutStatement") == null;
 setInterval(() => {
+  if (modalNotReady) {
+    console.log(statement);
+    console.log(document.getElementById("negishutStatement"));
+    if (document.getElementById("negishutStatement") != null) {
+      modalNotReady = false;
+    } else {
+      document.body.append(statement);
+    }
+  }
   if (sidebarOpen) {
     wheel.style.transform = `rotate(${deg}deg)`;
     deg = (deg + 10) % 359;

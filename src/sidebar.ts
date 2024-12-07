@@ -1,4 +1,4 @@
-import { move, negishutPos, sidebar } from "./elements";
+import { move, negishutPos, sidebar, statement } from "./elements";
 import { jsToStyle, openSideBar, pushStyle, readMe } from "./func";
 import { FilterStrengthKeys, JsEl } from "./global";
 const style = document.createElement("style");
@@ -176,7 +176,7 @@ const sidebarOpt: JsEl = {
     left: `min(-380px,-100vw)`,
     width: "min(380px,100vw)",
     height: "100%",
-    backgroundColor: "transparent",
+    backgroundColor: "rgba(200,200,200,0.5)",
     backdropFilter: "blur(8px)",
     color: "black",
     transition: "left 0.3s ease-in-out",
@@ -500,7 +500,7 @@ move.addEventListener("change", (event) => {
   }
 });
 const statementOpt: JsEl = {
-  id: "statement",
+  id: "negishutStatement",
   style: {
     borderRadius: "5%",
     backdropFilter: "blur(10px)",
@@ -510,7 +510,6 @@ const statementOpt: JsEl = {
     padding: "10px",
   },
 };
-const statement = document.createElement("dialog");
 const paragraphStatement = document.createElement("p");
 const openStateBtn = document.createElement("button");
 const closeStateBtn = document.createElement("button");
@@ -540,10 +539,17 @@ document.body.append(statement);
 
 document.head.append(style);
 const guide = document.createElement("span");
-guide.innerText = `
-ALT+A לפתיחת וסגירת החלון נגישות
-פותח על ידי ברכיה יצחק שושן`;
-guide.style.fontSize = "large";
+const guideOpt: JsEl = {
+  innerText: `ALT+A לפתיחת וסגירת החלון נגישות
+  פותח על ידי ברכיה יצחק שושן`,
+  style: {
+    textAlign: "start",
+    fontSize: "large",
+    fontFamily: "fantasy",
+    paddingBottom: "3px",
+  },
+};
+jsToStyle(guide, guideOpt);
 sidebar.appendChild(intoRow(closeBtn, openStateBtn));
 sidebar.appendChild(intoRow(hyperBold, headersBold, font));
 sidebar.appendChild(intoRow(grayScale, invertColors, brightness));
