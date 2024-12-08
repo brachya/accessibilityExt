@@ -1,6 +1,6 @@
 {
   "name": "negishut",
-  "version": "0.1.212-0",
+  "version": "0.1.212",
   "description": "an accessibility extension that handle the accessibility requirements in hebrew",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
