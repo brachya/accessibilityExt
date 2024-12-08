@@ -169,6 +169,7 @@ animation-duration:1s;
 pushStyle(style, preStyle);
 const sidebarOpt: JsEl = {
   id: "sidebar",
+  ariaLabel: "הגדרת נגישות",
   style: {
     display: "none",
     position: "fixed",
@@ -221,7 +222,7 @@ const closeBtnOpt: JsEl = {
     cursor: "pointer",
     background: "rgba(255,255,255,0.3)",
     borderRadius: "10%",
-    padding: "2px",
+    padding: "10px",
   },
 };
 const rowOpt: JsEl = {
@@ -445,6 +446,7 @@ pauseAnimate.addEventListener("click", (event) => {
 });
 let readActive = false;
 jsToStyle(speaker, uniqueName(btnOpt, "קורא מסך", "speaker"));
+speaker.style.aspectRatio = "";
 speaker.addEventListener("click", (event) => {
   const eventBtn = event.target as HTMLButtonElement;
   if (readActive) {
@@ -542,6 +544,7 @@ const guide = document.createElement("span");
 const guideOpt: JsEl = {
   innerText: `ALT+A לפתיחת וסגירת החלון נגישות
   פותח על ידי ברכיה יצחק שושן`,
+  tabIndex: 0,
   style: {
     textAlign: "start",
     fontSize: "large",

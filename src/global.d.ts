@@ -7,6 +7,7 @@ export type FilterStrengthKeys =
   | "sepiaHue";
 
 export interface JsEl {
+  tabIndex?: number;
   dir?: string;
   type?: string;
   draggable?: boolean;

@@ -42,8 +42,6 @@ let roadMove = 0;
 let modalNotReady = document.getElementById("negishutStatement") == null;
 setInterval(() => {
   if (modalNotReady) {
-    console.log(statement);
-    console.log(document.getElementById("negishutStatement"));
     if (document.getElementById("negishutStatement") != null) {
       modalNotReady = false;
     } else {
