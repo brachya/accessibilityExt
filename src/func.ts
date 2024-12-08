@@ -9,7 +9,6 @@ import {
   road4,
   setIsDragged,
   sidebar,
-  statement,
   wheel,
 } from "./elements";
 import { JsEl } from "./global";
@@ -39,32 +38,26 @@ export const pushStyle = (
 
 let deg = 0;
 let roadMove = 0;
-const modalAppend = setInterval(() => {
-  if (document.getElementById("negishutStatement") != null) {
-    // for nextJs ssr
-    clearInterval(modalAppend);
-  } else {
-    document.body.append(statement);
-  }
-}, 100);
-setInterval(() => {
-  if (sidebarOpen) {
-    wheel.style.transform = `rotate(${deg}deg)`;
-    deg = (deg + 10) % 359;
+const movingWheel = () => {
+  // if (sidebarOpen) {
+  wheel.style.transform = `rotate(${deg}deg)`;
+  deg = (deg + 10) % 359;
 
-    road1.style.transform = `translateX(${roadMove}px)`;
-    road2.style.transform = `translateX(${
-      (roadMove - buttonSize * 0.25) % buttonSize
-    }px)`;
-    road3.style.transform = `translateX(${
-      (roadMove - buttonSize * 0.5) % buttonSize
-    }px)`;
-    road4.style.transform = `translateX(${
-      (roadMove - buttonSize * 0.75) % buttonSize
-    }px)`;
-    roadMove = (roadMove - buttonSize * 0.04) % buttonSize;
-  }
-}, 100);
+  road1.style.transform = `translateX(${roadMove}px)`;
+  road2.style.transform = `translateX(${
+    (roadMove - buttonSize * 0.25) % buttonSize
+  }px)`;
+  road3.style.transform = `translateX(${
+    (roadMove - buttonSize * 0.5) % buttonSize
+  }px)`;
+  road4.style.transform = `translateX(${
+    (roadMove - buttonSize * 0.75) % buttonSize
+  }px)`;
+  roadMove = (roadMove - buttonSize * 0.04) % buttonSize;
+  // }
+};
+let moveInterval: NodeJS.Timeout;
+
 const moveOptions = [
   { value: "top", textContent: "ראש הדף" },
   { value: "header", textContent: "תפריט" },
@@ -75,9 +68,6 @@ const moveOptions = [
   { value: "middle", textContent: "מרכז" },
   { value: "bottom", textContent: "תחתית הדף" },
 ];
-const focusableElements = sidebar.querySelectorAll(
-  "button, a, select, [tabindex]"
-);
 export let sidebarOpen = false;
 export const openSideBar = () => {
   if (getIsDragged()) {
@@ -85,16 +75,17 @@ export const openSideBar = () => {
     return;
   }
   if (!sidebarOpen) {
+    moveInterval = setInterval(movingWheel, 100);
     sidebar.style.display = "block";
     setTimeout(() => {
       sidebar.style.left = "0"; // Slide in the sidebar
       sidebarOpen = true;
     }, 100);
-
     move.innerHTML = "";
     move.append(...(createOptionsEl(moveOptions) as HTMLOptionElement[]));
     (sidebar.children[0] as HTMLButtonElement).focus();
   } else {
+    clearInterval(moveInterval);
     sidebar.style.left = `-${sidebar.offsetWidth}px`; // Hide the sidebar
     sidebarOpen = false;
     setTimeout(() => {
