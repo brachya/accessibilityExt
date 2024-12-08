@@ -135,9 +135,9 @@ addEventListener("keydown", (event) => {
 
 // Add event listeners to start dragging on mouse down or touch start
 draggableButton.addEventListener("mousedown", startDrag);
-draggableButton.addEventListener("touchstart", startDrag);
+draggableButton.addEventListener("touchstart", startDrag, { passive: false });
 draggableButton.addEventListener("click", openSideBar);
-draggableButton.addEventListener("touchstart", openSideBar);
+draggableButton.addEventListener("touchstart", openSideBar, { passive: false });
 addEventListener("resize", resetBtnPos);
 
 export default draggableButton;
