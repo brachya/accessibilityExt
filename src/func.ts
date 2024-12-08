@@ -39,15 +39,15 @@ export const pushStyle = (
 
 let deg = 0;
 let roadMove = 0;
-let modalNotReady = document.getElementById("negishutStatement") == null;
-setInterval(() => {
-  if (modalNotReady) {
-    if (document.getElementById("negishutStatement") != null) {
-      modalNotReady = false;
-    } else {
-      document.body.append(statement);
-    }
+const modalAppend = setInterval(() => {
+  if (document.getElementById("negishutStatement") != null) {
+    // for nextJs ssr
+    clearInterval(modalAppend);
+  } else {
+    document.body.append(statement);
   }
+}, 100);
+setInterval(() => {
   if (sidebarOpen) {
     wheel.style.transform = `rotate(${deg}deg)`;
     deg = (deg + 10) % 359;
