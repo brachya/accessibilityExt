@@ -39,14 +39,27 @@ function Accessibility() {
 ## Changing Language
 
 ```typescript
-import {setLang} from "negishut"
+import { setLang } from "negishut";
 
-function ChangeLang(){
-    return (
-        <div>
-        <button onClick={()=>{setLang("he")}}>hebrew</button>)
-        <button onClick={()=>{setLang("en")}}>english</button>)
-        </div>
+function ChangeLang() {
+  return (
+    <div>
+      <button
+        onClick={() => {
+          setLang("he");
+        }}
+      >
+        hebrew
+      </button>
+      <button
+        onClick={() => {
+          setLang("en");
+        }}
+      >
+        english
+      </button>
+    </div>
+  );
 }
 ```
 
