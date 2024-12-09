@@ -1,9 +1,12 @@
+import { languages } from "./global";
+import { setLang, resetLang } from "./elements";
+
 /**
  * @description an init function to add the button and sidebar to body
  * @example Negishut()
  * @example for NextJs wrap it in useEffect
  */
-export default async function Negishut() {
+export default async function Negishut(language: languages = "he") {
   if (document.readyState !== "complete") {
     await new Promise<void>((resolve) => {
       document.addEventListener("readystatechange", () => {
@@ -11,6 +14,8 @@ export default async function Negishut() {
       });
     });
   }
+  const { setLang } = await import("./elements");
+  setLang(document.documentElement.lang as languages);
   const { default: draggableButton } = await import("./draggableButton");
   const { default: sidebar } = await import("./sidebar");
   if (!document.getElementById("negishutDragBtn")) {
@@ -18,3 +23,7 @@ export default async function Negishut() {
     document.body.append(sidebar);
   }
 }
+export const setLanguage = (language: languages) => {
+  setLang(language);
+  resetLang();
+};

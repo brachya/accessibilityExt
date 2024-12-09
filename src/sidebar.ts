@@ -1,25 +1,37 @@
-import { move, negishutPos, sidebar, statement } from "./elements";
+import {
+  move,
+  negishutPos,
+  sidebar,
+  statement,
+  lang,
+  paragraphStatement,
+  grayScale,
+  invertColors,
+  brightness,
+  sepia,
+  saturate,
+  sepiaHue,
+  closeBtn,
+  moveBox,
+  moveHeader,
+  hyperBold,
+  textReset,
+  textBigger,
+  font,
+  headersBold,
+  pauseAnimate,
+  speaker,
+  textSmaller,
+  focus,
+  closeStateBtn,
+  openStateBtn,
+  guide,
+} from "./elements";
 import { jsToStyle, openSideBar, pushStyle, readMe } from "./func";
 import { FilterStrengthKeys, JsEl } from "./global";
+import { translate } from "./lang";
 const style = document.createElement("style");
-const closeBtn = document.createElement("button");
-const textBigger = document.createElement("button");
-const textSmaller = document.createElement("button");
-const textReset = document.createElement("button");
-const hyperBold = document.createElement("button");
-const headersBold = document.createElement("button");
-const grayScale = document.createElement("button");
-const invertColors = document.createElement("button");
-const brightness = document.createElement("button");
-const sepia = document.createElement("button");
-const saturate = document.createElement("button");
-const sepiaHue = document.createElement("button");
-const focus = document.createElement("button");
-const moveBox = document.createElement("label");
-const moveHeader = document.createElement("span");
-const font = document.createElement("button");
-const pauseAnimate = document.createElement("button");
-const speaker = document.createElement("button");
+
 const filterStrength: Record<
   FilterStrengthKeys,
   { btn: HTMLElement; strength: number; addition?: string }
@@ -79,7 +91,8 @@ const preStyle = {
   addition: `
 .hoverByMe {
   --color: #2e42ff;
-  padding: 0.8em 2em;
+  padding: 0.8em;
+  //  2em;
   background-color: transparent;
   border-radius: 0.6em;
   position: relative;
@@ -135,7 +148,6 @@ const preStyle = {
   box-shadow: 0 6px 15px rgba(46, 66, 255, 0.4),
     0 8px 24px rgba(46, 66, 255, 0.2);
   transform: translateY(-3px);
-}
 
 .hoverByMe:active {
   transform: scale(0.97);
@@ -169,7 +181,7 @@ animation-duration:1s;
 pushStyle(style, preStyle);
 const sidebarOpt: JsEl = {
   id: "sidebar",
-  ariaLabel: "הגדרת נגישות",
+  ariaLabel: translate[lang].sideBarLabel,
   style: {
     display: "none",
     position: "fixed",
@@ -212,7 +224,7 @@ const btnOpt: JsEl = {
   },
 };
 const closeBtnOpt: JsEl = {
-  innerText: "סגור",
+  innerText: translate[lang].closeText,
   className: "hoverNegishut",
   style: {
     top: "10px",
@@ -233,7 +245,6 @@ const rowOpt: JsEl = {
   },
 };
 const moveOpt: JsEl = {
-  ariaLabel: "ניווט בדף",
   style: {
     color: "black",
     position: "absolute",
@@ -258,7 +269,8 @@ const moveBoxOpt: JsEl = {
   },
 };
 const moveHeaderOpt: JsEl = {
-  innerText: "ניווט",
+  innerText: translate[lang].moveHeaderText,
+  tabIndex: 0,
   style: {
     position: "absolute",
     top: "10%",
@@ -281,7 +293,7 @@ closeBtn.addEventListener("click", openSideBar);
 // Append close button and menu to sidebar
 
 jsToStyle(textBigger, uniqueName(btnOpt, "+", "textSizeBigger"));
-textBigger.ariaLabel = "הגדלת טקסט";
+textBigger.ariaLabel = translate[lang].textBiggerLabel;
 textBigger.addEventListener("click", () => {
   preStyle["text"] = `* {
     font-size: ${++textSize}px !important;
@@ -292,7 +304,7 @@ textBigger.addEventListener("click", () => {
   pushStyle(style, preStyle);
 });
 jsToStyle(textSmaller, uniqueName(btnOpt, "-", "textSizeSmaller"));
-textSmaller.ariaLabel = "הקטנת טקסט";
+textSmaller.ariaLabel = translate[lang].textSmallerLabel;
 textSmaller.addEventListener("click", () => {
   preStyle["text"] = `* {
     font-size: ${--textSize}px !important;
@@ -303,7 +315,7 @@ textSmaller.addEventListener("click", () => {
   pushStyle(style, preStyle);
 });
 jsToStyle(textReset, uniqueName(btnOpt, "X", "textSizeReset"));
-textReset.ariaLabel = "איפוס גודל טקסט";
+textReset.ariaLabel = translate[lang].textResetLabel;
 textReset.addEventListener("click", () => {
   preStyle["text"] = "";
   delete negishutPos["text"];
@@ -311,7 +323,10 @@ textReset.addEventListener("click", () => {
   pushStyle(style, preStyle);
 });
 
-jsToStyle(hyperBold, uniqueName(btnOpt, "קישור", "hyperBold"));
+jsToStyle(
+  hyperBold,
+  uniqueName(btnOpt, translate[lang].hyperText, "hyperBold")
+);
 hyperBold.addEventListener("click", () => {
   if (preStyle.hyper == "") {
     preStyle["hyper"] = `a{
@@ -330,7 +345,10 @@ hyperBold.addEventListener("click", () => {
     localStorage.setItem("NegishutPos", JSON.stringify(negishutPos));
   }
 });
-jsToStyle(headersBold, uniqueName(btnOpt, "כותרת", "headersBold"));
+jsToStyle(
+  headersBold,
+  uniqueName(btnOpt, translate[lang].headerText, "headersBold")
+);
 headersBold.addEventListener("click", () => {
   if (preStyle.headers == "") {
     preStyle["headers"] = `h1,h2,h3,h4,h5,h6,h7{
@@ -348,25 +366,40 @@ headersBold.addEventListener("click", () => {
     headersBold.classList.remove("checkedByNegishut");
   }
 });
-jsToStyle(grayScale, uniqueName(btnOpt, "עיוור צבעים", "grayscale"));
+jsToStyle(
+  grayScale,
+  uniqueName(btnOpt, translate[lang].colorBlindText, "grayscale")
+);
 grayScale.addEventListener("click", chooseOnlyMe);
 
-jsToStyle(invertColors, uniqueName(btnOpt, "כבדי ראיה", "invert"));
+jsToStyle(
+  invertColors,
+  uniqueName(btnOpt, translate[lang].invertText, "invert")
+);
 invertColors.addEventListener("click", chooseOnlyMe);
 
-jsToStyle(brightness, uniqueName(btnOpt, "בהירות גבוהה", "brightness"));
+jsToStyle(
+  brightness,
+  uniqueName(btnOpt, translate[lang].brightnessText, "brightness")
+);
 brightness.addEventListener("click", chooseOnlyMe);
 
-jsToStyle(sepia, uniqueName(btnOpt, "אור כחול", "sepia"));
+jsToStyle(sepia, uniqueName(btnOpt, translate[lang].blueLightText, "sepia"));
 sepia.addEventListener("click", chooseOnlyMe);
 
-jsToStyle(saturate, uniqueName(btnOpt, "צבעים עזים", "saturate"));
+jsToStyle(
+  saturate,
+  uniqueName(btnOpt, translate[lang].warmColorsText, "saturate")
+);
 saturate.addEventListener("click", chooseOnlyMe);
 
-jsToStyle(sepiaHue, uniqueName(btnOpt, "צבעים קרים", "sepiaHue"));
+jsToStyle(
+  sepiaHue,
+  uniqueName(btnOpt, translate[lang].coldColorsText, "sepiaHue")
+);
 sepiaHue.addEventListener("click", chooseOnlyMe);
 
-jsToStyle(focus, uniqueName(btnOpt, "הדגשה", "focus"));
+jsToStyle(focus, uniqueName(btnOpt, translate[lang].focusBorderText, "focus"));
 focus.addEventListener("click", (event) => {
   const eventBtn = event.target as HTMLButtonElement;
   if (preStyle["focus"] == "") {
@@ -388,7 +421,7 @@ focus.addEventListener("click", (event) => {
   pushStyle(style, preStyle);
 });
 
-jsToStyle(font, uniqueName(btnOpt, "שינוי פונט", "font"));
+jsToStyle(font, uniqueName(btnOpt, translate[lang].fontChangerText, "font"));
 font.addEventListener("click", (event) => {
   const eventBtn = event.target as HTMLButtonElement;
   if (preStyle["font"] == "") {
@@ -408,7 +441,10 @@ font.addEventListener("click", (event) => {
   pushStyle(style, preStyle);
 });
 
-jsToStyle(pauseAnimate, uniqueName(btnOpt, "השהה אנימציות", "pauseAnimate"));
+jsToStyle(
+  pauseAnimate,
+  uniqueName(btnOpt, translate[lang].pauseAnimateText, "pauseAnimate")
+);
 pauseAnimate.addEventListener("click", (event) => {
   const eventBtn = event.target as HTMLButtonElement;
   if (preStyle["pauseAnimate"] == "") {
@@ -445,7 +481,7 @@ pauseAnimate.addEventListener("click", (event) => {
   pushStyle(style, preStyle);
 });
 let readActive = false;
-jsToStyle(speaker, uniqueName(btnOpt, "קורא מסך", "speaker"));
+jsToStyle(speaker, uniqueName(btnOpt, translate[lang].speakerText, "speaker"));
 speaker.style.aspectRatio = "";
 speaker.addEventListener("click", (event) => {
   const eventBtn = event.target as HTMLButtonElement;
@@ -512,17 +548,10 @@ const statementOpt: JsEl = {
     padding: "10px",
   },
 };
-const paragraphStatement = document.createElement("p");
-const openStateBtn = document.createElement("button");
-const closeStateBtn = document.createElement("button");
+
 paragraphStatement.style.textAlign = "center";
-paragraphStatement.innerText = `
-אתר זה רואה חשיבות רבה בהנגשתו לכלל האוכלוסייה ופועל כדי לאפשר לאנשים עם מוגבלות חוויית שימוש נוחה ונגישה בתכניו.
-
-במסגרת מאמצי ההנגשה, האתר עובר התאמות ועומד בתקני הנגישות העדכניים ביותר. עם זאת, ייתכנו חלקים באתר או תכנים המוצעים על ידי גורמי צד שלישי, כגון סרטונים מוטמעים או קבצים חיצוניים, שאינם נגישים במלואם.
-
-אנו שואפים לשפר את הנגישות באופן מתמיד ולהבטיח חוויית גלישה טובה לכל המשתמשים. במידה ונתקלתם בקושי או בבעיה בנגישות האתר, נשמח אם תפנו אלינו על מנת שנוכל לטפל בכך בהקדם האפשרי.
-`;
+paragraphStatement.tabIndex = 0;
+paragraphStatement.innerText = translate[lang].statementText;
 closeStateBtn.autofocus = true;
 openStateBtn.addEventListener("click", () => {
   statement.showModal();
@@ -533,17 +562,18 @@ closeStateBtn.addEventListener("click", () => {
 jsToStyle(statement, statementOpt);
 jsToStyle(
   openStateBtn,
-  uniqueName(closeBtnOpt, "הצהרת נגישות", "openStateBtn")
+  uniqueName(closeBtnOpt, translate[lang].statementBtnText, "openStateBtn")
 );
-jsToStyle(closeStateBtn, uniqueName(closeBtnOpt, "סגור", "closeStateBtn"));
+jsToStyle(
+  closeStateBtn,
+  uniqueName(closeBtnOpt, translate[lang].closeText, "closeStateBtn")
+);
 statement.append(closeStateBtn, paragraphStatement);
 document.body.append(statement);
 
 document.head.append(style);
-const guide = document.createElement("span");
 const guideOpt: JsEl = {
-  innerText: `ALT+A לפתיחת וסגירת החלון נגישות
-  פותח על ידי ברכיה יצחק שושן`,
+  innerText: translate[lang].guideText + "\n" + translate[lang].developerText,
   tabIndex: 0,
   style: {
     textAlign: "start",

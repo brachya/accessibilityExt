@@ -2,6 +2,7 @@ import {
   buttonSize,
   draggableButton,
   getIsDragged,
+  lang,
   move,
   road1,
   road2,
@@ -12,6 +13,7 @@ import {
   wheel,
 } from "./elements";
 import { JsEl } from "./global";
+import { translate } from "./lang";
 
 export const jsToStyle = (
   el: HTMLElement,
@@ -39,7 +41,6 @@ export const pushStyle = (
 let deg = 0;
 let roadMove = 0;
 const movingWheel = () => {
-  // if (sidebarOpen) {
   wheel.style.transform = `rotate(${deg}deg)`;
   deg = (deg + 10) % 359;
 
@@ -54,19 +55,18 @@ const movingWheel = () => {
     (roadMove - buttonSize * 0.75) % buttonSize
   }px)`;
   roadMove = (roadMove - buttonSize * 0.04) % buttonSize;
-  // }
 };
 let moveInterval: NodeJS.Timeout;
 
-const moveOptions = [
-  { value: "top", textContent: "ראש הדף" },
-  { value: "header", textContent: "תפריט" },
-  { value: "nav", textContent: "תפריט" },
-  { value: "main", textContent: "תוכן" },
-  { value: "h1", textContent: "כותרת ראשית" },
-  { value: "h2", textContent: "כותרת משנית" },
-  { value: "middle", textContent: "מרכז" },
-  { value: "bottom", textContent: "תחתית הדף" },
+export const moveOptions = () => [
+  { value: "top", textContent: translate[lang].top },
+  { value: "header", textContent: translate[lang].header },
+  { value: "nav", textContent: translate[lang].nav },
+  { value: "main", textContent: translate[lang].main },
+  { value: "h1", textContent: translate[lang].h1 },
+  { value: "h2", textContent: translate[lang].h2 },
+  { value: "middle", textContent: translate[lang].middle },
+  { value: "bottom", textContent: translate[lang].bottom },
 ];
 export let sidebarOpen = false;
 export const openSideBar = () => {
@@ -82,7 +82,7 @@ export const openSideBar = () => {
       sidebarOpen = true;
     }, 100);
     move.innerHTML = "";
-    move.append(...(createOptionsEl(moveOptions) as HTMLOptionElement[]));
+    move.append(...createOptionsEl(moveOptions()));
     (sidebar.children[0] as HTMLButtonElement).focus();
   } else {
     clearInterval(moveInterval);
@@ -100,7 +100,7 @@ export const resetBtnPos = () => {
 export const createOptionsEl = (
   elOptions: { value: string; textContent: string }[]
 ) => {
-  return elOptions.map((el) => {
+  const opts = elOptions.map((el) => {
     const opt = document.createElement("option");
     const find = document.querySelector(el.value);
     opt.value = el.value;
@@ -109,6 +109,7 @@ export const createOptionsEl = (
       return opt;
     }
   });
+  return opts.filter((opt) => opt !== undefined);
 };
 
 const detectLanguage = (text: string): string => {
@@ -143,16 +144,16 @@ const getElementText = (element: HTMLElement): string => {
     return (
       (element as HTMLTextAreaElement).value ||
       (element as HTMLInputElement).placeholder ||
-      "אין טקסט"
+      translate[lang].noTextError
     );
   }
 
   return (
-    element.getAttribute("aria-label") ||
-    element.getAttribute("alt") ||
-    element.innerText ||
-    element.textContent ||
-    "אין טקסט"
+    element.getAttribute("aria-label") ??
+    element.getAttribute("alt") ??
+    element.innerText ??
+    element.textContent ??
+    translate[lang].noTextError
   );
 };
 export const readMe = (event: FocusEvent): void => {
