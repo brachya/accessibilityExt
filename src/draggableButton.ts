@@ -9,7 +9,7 @@ import {
   setIsDragged,
 } from "./elements";
 import { jsToStyle, openSideBar, resetBtnPos } from "./func";
-import { JsEl } from "./global";
+import type { JsEl } from "./global";
 import { cases } from "./wheelChair";
 const image = document.createElement("div");
 let offsetX = 0; // X offset between cursor and button
@@ -17,8 +17,10 @@ let offsetY = 0; // Y offset between cursor and button
 let isDragging = false; // Whether the button is being dragged
 let xForBackup: number;
 let yForBackup: number;
+const savedFabLeft =
+  "x" in negishutPos ? `${negishutPos["x"]}px` : undefined;
+
 const dragBtnOpt: JsEl = {
-  dir: "ltr",
   type: "button",
   ariaLabel: "כפתור נגישות",
   className: "draggableButtonNegishut",
@@ -27,20 +29,23 @@ const dragBtnOpt: JsEl = {
     width: `${buttonSize}px`,
     aspectRatio: "1/1",
     position: "fixed",
-    border: "3px solid white",
-    left: `${"x" in negishutPos ? negishutPos["x"] : "90"}px`,
+    border: "3px solid var(--negishut-fab-border)",
+    ...(savedFabLeft
+      ? { left: savedFabLeft }
+      : { insetInlineStart: "90px" }),
     top: `${"y" in negishutPos ? negishutPos["y"] : window.innerHeight - 70}px`,
-    backgroundColor: "#007BFF",
-    color: "white",
-    borderRadius: "5px",
+    backgroundColor: "var(--negishut-accent)",
+    color: "var(--negishut-on-accent)",
+    borderRadius: "var(--negishut-fab-radius)",
     cursor: "grab",
-    zIndex: "9999999",
+    zIndex: "var(--negishut-z-button)",
     overflow: "hidden",
   },
   draggable: true,
 };
 
 const imageOpt: JsEl = {
+  dir: "ltr",
   style: {
     width: "100%",
     margin: "0px",
@@ -51,7 +56,7 @@ const roadOpt: JsEl = {
     width: "20%",
     height: "3%",
     left: "100%",
-    backgroundColor: "white",
+    backgroundColor: "var(--negishut-on-accent)",
     borderRadius: "20%",
     position: "absolute",
     bottom: "13%",
@@ -67,12 +72,19 @@ image.appendChild(cases);
 draggableButton.append(image);
 
 draggableButton.append(road1, road2, road3, road4);
+function pointerClient(event: TouchEvent | MouseEvent) {
+  const touch = "touches" in event ? event.touches[0] : undefined;
+  return {
+    clientX: touch?.clientX ?? ("clientX" in event ? event.clientX : 0),
+    clientY: touch?.clientY ?? ("clientY" in event ? event.clientY : 0),
+  };
+}
+
 const startDrag = (event: TouchEvent | MouseEvent) => {
   // Prevent the default action, like text selection
   event.preventDefault();
   // Get the initial mouse position
-  const clientX = "touches" in event ? event.touches[0].clientX : event.clientX;
-  const clientY = "touches" in event ? event.touches[0].clientY : event.clientY;
+  const { clientX, clientY } = pointerClient(event);
   // Set the initial offsets for dragging
   offsetX = clientX - draggableButton.getBoundingClientRect().left;
   offsetY = clientY - draggableButton.getBoundingClientRect().top;
@@ -94,14 +106,15 @@ const drag = (event: TouchEvent | MouseEvent) => {
   setIsDragged(true);
 
   // Get the mouse position
-  const clientX = "touches" in event ? event.touches[0].clientX : event.clientX;
-  const clientY = "touches" in event ? event.touches[0].clientY : event.clientY;
+  const { clientX, clientY } = pointerClient(event);
 
   // Calculate new position
   xForBackup = clientX - offsetX;
   yForBackup = clientY - offsetY;
   // Move the button to the new position
   //   draggableButton.style.position = "fixed"; // Make sure the button is fixed positioned
+  draggableButton.style.insetInlineStart = "";
+  draggableButton.style.right = "";
   draggableButton.style.left = `${xForBackup}px`;
   draggableButton.style.top = `${yForBackup}px`;
 };
@@ -126,7 +139,7 @@ const stopDrag = () => {
   draggableButton.style.cursor = "grab";
 };
 
-addEventListener("keydown", (event) => {
+addEventListener("keydown", (event: KeyboardEvent) => {
   if (event.altKey && event.code == "KeyA") {
     event.preventDefault();
     draggableButton.click();

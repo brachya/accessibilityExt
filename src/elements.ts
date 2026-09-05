@@ -1,4 +1,4 @@
-import { languages } from "./global";
+import type { languages } from "./global";
 import { translate } from "./lang";
 
 export const sidebar = document.createElement("div");

@@ -1,3 +1,4 @@
+import { applySidebarDock } from "./dir";
 import {
   buttonSize,
   draggableButton,
@@ -12,7 +13,7 @@ import {
   sidebar,
   wheel,
 } from "./elements";
-import { JsEl } from "./global";
+import type { JsEl } from "./global";
 import { translate } from "./lang";
 
 export const jsToStyle = (
@@ -76,17 +77,17 @@ export const openSideBar = () => {
   }
   if (!sidebarOpen) {
     moveInterval = setInterval(movingWheel, 100);
+    applySidebarDock(false);
     sidebar.style.display = "block";
-    setTimeout(() => {
-      sidebar.style.left = "0"; // Slide in the sidebar
-      sidebarOpen = true;
-    }, 100);
+    void sidebar.offsetWidth;
+    applySidebarDock(true);
+    sidebarOpen = true;
     move.innerHTML = "";
     move.append(...createOptionsEl(moveOptions()));
     (sidebar.children[0] as HTMLButtonElement).focus();
   } else {
     clearInterval(moveInterval);
-    sidebar.style.left = `-${sidebar.offsetWidth}px`; // Hide the sidebar
+    applySidebarDock(false);
     sidebarOpen = false;
     setTimeout(() => {
       sidebar.style.display = "none";
@@ -94,7 +95,9 @@ export const openSideBar = () => {
   }
 };
 export const resetBtnPos = () => {
-  draggableButton.style.left = "20px";
+  draggableButton.style.left = "";
+  draggableButton.style.right = "";
+  draggableButton.style.insetInlineStart = "20px";
   draggableButton.style.top = `${window.innerHeight - 90}px`;
 };
 export const createOptionsEl = (

@@ -1,6 +1,6 @@
 import { wheel } from "./elements";
 import { jsToStyle } from "./func";
-import { JsEl } from "./global";
+import type { JsEl } from "./global";
 
 export const cases = document.createElement("div");
 cases.style.position = "absolute";
@@ -22,7 +22,7 @@ const backHandleOpt: JsEl = {
     width: "20%",
     left: "0%",
     height: "5%",
-    backgroundColor: "black",
+    backgroundColor: "var(--negishut-icon)",
     position: "absolute",
   },
 };
@@ -32,7 +32,7 @@ const backOpt: JsEl = {
     height: "35%",
     left: "20%",
     transform: "rotate(-15deg)",
-    backgroundColor: "black",
+    backgroundColor: "var(--negishut-icon)",
     position: "absolute",
   },
 };
@@ -43,7 +43,7 @@ const handleOpt: JsEl = {
     top: "15%",
     left: "23%",
     // transform: "translateX(4.5px) translateY(4px)",
-    backgroundColor: "black",
+    backgroundColor: "var(--negishut-icon)",
     position: "absolute",
   },
 };
@@ -56,7 +56,7 @@ const wheelOpt: JsEl = {
     top: "33%",
     left: "13%",
     // transform: "translateX(4px) translateY(8px)",
-    border: "1px solid black",
+    border: "1px solid var(--negishut-icon)",
     borderRadius: "100%",
     position: "absolute",
   },
@@ -69,7 +69,7 @@ const innerWheelOpt: JsEl = {
     top: "50%",
     left: "50%",
     transform: "translateX(-50%) translateY(-50%)",
-    border: "1px solid black",
+    border: "1px solid var(--negishut-icon)",
     borderRadius: "100%",
     position: "absolute",
   },
@@ -80,7 +80,7 @@ const lineOpt: JsEl = {
     height: "1px",
     top: "50%",
     // transform: "translateX(2px) translateY(4.5px)",
-    backgroundColor: "black",
+    backgroundColor: "var(--negishut-icon)",
     position: "absolute",
   },
 };
@@ -90,7 +90,7 @@ const line2Opt: JsEl = {
     height: "100%",
     left: "50%",
     // transform: "translateX(4.5px) translateY(2px)",
-    backgroundColor: "black",
+    backgroundColor: "var(--negishut-icon)",
     position: "absolute",
   },
 };
@@ -102,7 +102,7 @@ const legOpt: JsEl = {
     top: "48%",
     left: "52%",
     // transform: "translateX(14px) translateY(10px)",
-    backgroundColor: "black",
+    backgroundColor: "var(--negishut-icon)",
     position: "absolute",
   },
 };
@@ -113,7 +113,7 @@ const footOpt: JsEl = {
     top: "49%",
     left: "70%",
     transform: "rotate(-25deg)",
-    backgroundColor: "black",
+    backgroundColor: "var(--negishut-icon)",
     position: "absolute",
   },
 };

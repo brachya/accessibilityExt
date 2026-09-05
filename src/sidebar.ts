@@ -27,8 +27,9 @@ import {
   openStateBtn,
   guide,
 } from "./elements";
+import { applySidebarDock } from "./dir";
 import { jsToStyle, openSideBar, pushStyle, readMe } from "./func";
-import { FilterStrengthKeys, JsEl } from "./global";
+import type { FilterStrengthKeys, JsEl } from "./global";
 import { translate } from "./lang";
 const style = document.createElement("style");
 
@@ -80,21 +81,20 @@ const preStyle = {
   pauseAnimate: "",
   checkedByNegishut: `
     .checkedByNegishut{
-    background: rgb(82, 192, 212) !important;
+    background: var(--negishut-checked) !important;
     } 
     `,
   focus: "",
   draggableButton: `
   .draggableButtonNegishut:hover {
-  background: rgba(42, 119, 191, 0.5) !important;
+  background: var(--negishut-accent-hover) !important;
 }`,
   addition: `
 .hoverByMe {
-  --color: #2e42ff;
+  --color: var(--negishut-accent-strong);
   padding: 0.8em;
-  //  2em;
   background-color: transparent;
-  border-radius: 0.6em;
+  border-radius: var(--negishut-radius);
   position: relative;
   overflow: hidden;
   cursor: pointer;
@@ -102,7 +102,7 @@ const preStyle = {
   font-weight: 700;
   font-size: 17px;
   border: 2px solid var(--color);
-  font-family: inherit;
+  font-family: var(--negishut-font);
   text-transform: uppercase;
   text-align:center;
   z-index: 1;
@@ -142,31 +142,32 @@ const preStyle = {
 }
 
 .hoverByMe:hover {
-  background: linear-gradient(135deg, #2e42ff, #6a75ff);
-  color: #ffffff;
-  border-color: #6a75ff;
-  box-shadow: 0 6px 15px rgba(46, 66, 255, 0.4),
-    0 8px 24px rgba(46, 66, 255, 0.2);
+  background: linear-gradient(135deg, var(--negishut-accent-strong), var(--negishut-accent));
+  color: var(--negishut-on-accent);
+  border-color: var(--negishut-accent);
+  box-shadow: 0 6px 15px color-mix(in srgb, var(--negishut-accent-strong) 40%, transparent),
+    0 8px 24px color-mix(in srgb, var(--negishut-accent-strong) 20%, transparent);
   transform: translateY(-3px);
+}
 
 .hoverByMe:active {
   transform: scale(0.97);
   filter: brightness(0.85);
   box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
-  background: linear-gradient(135deg, #2e42ff, #5c6bff);
+  background: linear-gradient(135deg, var(--negishut-accent-strong), var(--negishut-accent));
 }
 
 .hoverByMe:focus {
   outline: none;
-  border-color: #7289da;
-  background:rgba(255,255,255,0.8) !important;
-  box-shadow: 0 0 0 4px rgba(46, 66, 255, 0.3);
+  border-color: var(--negishut-accent);
+  background: var(--negishut-surface-muted) !important;
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--negishut-accent-strong) 30%, transparent);
 }
 .hoverNegishut:hover{
-  background: rgba(255,255,255,0.8) !important;
+  background: var(--negishut-surface-muted) !important;
 }
 .hoverNegishut:focus{
-  background: rgba(255,255,255,0.8) !important;
+  background: var(--negishut-surface-muted) !important;
 }
 @keyframes dissapeareToAppeare{
 from{opacity:0%}
@@ -186,21 +187,22 @@ const sidebarOpt: JsEl = {
     display: "none",
     position: "fixed",
     top: "0",
-    left: `min(-380px,-100vw)`,
     width: "min(380px,100vw)",
     height: "100%",
-    backgroundColor: "rgba(200,200,200,0.5)",
+    backgroundColor: "var(--negishut-surface)",
     backdropFilter: "blur(8px)",
-    color: "black",
-    transition: "left 0.3s ease-in-out",
+    color: "var(--negishut-text)",
+    fontFamily: "var(--negishut-font)",
     overflowX: "auto",
     overflowY: "auto",
     paddingLeft: "2px",
     paddingRight: "2px",
     scrollbarWidth: "none",
+    zIndex: "var(--negishut-z-panel)",
   },
 };
 jsToStyle(sidebar, sidebarOpt);
+applySidebarDock(false);
 sidebar.tabIndex = 0;
 const uniqueName = (cssOpt: any, name: string, id: string) => {
   cssOpt["innerHTML"] = name;
@@ -216,10 +218,9 @@ const btnOpt: JsEl = {
     flex: "1",
     // width: "100%",
     aspectRatio: "1/1",
-    background: "rgba(255,255,255,0.3)",
-    // backdropFilter: "blur(10px)",
-    border: "1px solid skyblue",
-    borderRadius: "5%",
+    background: "var(--negishut-surface-muted)",
+    border: "1px solid var(--negishut-border)",
+    borderRadius: "var(--negishut-radius)",
     margin: "2px",
   },
 };
@@ -228,12 +229,14 @@ const closeBtnOpt: JsEl = {
   className: "hoverNegishut",
   style: {
     top: "10px",
-    right: "10px",
+    insetInlineEnd: "10px",
     fontSize: "18px",
-    border: "1px solid skyblue",
+    border: "1px solid var(--negishut-border)",
     cursor: "pointer",
-    background: "rgba(255,255,255,0.3)",
-    borderRadius: "10%",
+    background: "var(--negishut-surface-muted)",
+    borderRadius: "var(--negishut-radius)",
+    color: "var(--negishut-text)",
+    fontFamily: "var(--negishut-font)",
     padding: "10px",
   },
 };
@@ -246,16 +249,10 @@ const rowOpt: JsEl = {
 };
 const moveOpt: JsEl = {
   style: {
-    color: "black",
     position: "absolute",
     bottom: "10%",
     width: "90%",
     height: "40%",
-    border: "1px solid skyblue",
-    background: "rgba(255,255,255,0.3)",
-    padding: "2px",
-    textAlign: "center",
-    borderRadius: "10%",
   },
 };
 
@@ -540,12 +537,15 @@ move.addEventListener("change", (event) => {
 const statementOpt: JsEl = {
   id: "negishutStatement",
   style: {
-    borderRadius: "5%",
+    borderRadius: "var(--negishut-radius)",
     backdropFilter: "blur(10px)",
-    border: "2px solid skyblue",
-    background: "rgba(255,255,255,0.3)",
+    border: "2px solid var(--negishut-border)",
+    background: "var(--negishut-surface-muted)",
+    color: "var(--negishut-text)",
+    fontFamily: "var(--negishut-font)",
     width: "50%",
     padding: "10px",
+    zIndex: "var(--negishut-z-dialog)",
   },
 };
 

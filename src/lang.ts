@@ -1,5 +1,5 @@
 "use strict";
-import { languages, labels } from "./global";
+import type { languages, labels } from "./global";
 
 export const translate: Record<languages, Record<labels, string>> = {
   he: {
