@@ -9,8 +9,15 @@ import {
   type NegishutOptions,
 } from "./theme";
 
+export type { languages } from "./global";
 export type { NegishutDir } from "./dir";
-export type { NegishutColorScheme, NegishutOptions, NegishutTheme } from "./theme";
+export type {
+  NegishutColorScheme,
+  NegishutFabSize,
+  NegishutOptions,
+  NegishutTheme,
+} from "./theme";
+export { NEGISHUT_FAB_SIZE_PX, resolveFabSizePx } from "./theme";
 export { resolveDir, setDir };
 export { setTheme, setZIndex };
 

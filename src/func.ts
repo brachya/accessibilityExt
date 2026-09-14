@@ -57,7 +57,7 @@ const movingWheel = () => {
   }px)`;
   roadMove = (roadMove - buttonSize * 0.04) % buttonSize;
 };
-let moveInterval: NodeJS.Timeout;
+let moveInterval: ReturnType<typeof setInterval>;
 
 export const moveOptions = () => [
   { value: "top", textContent: translate[lang].top },

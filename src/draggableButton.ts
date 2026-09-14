@@ -1,5 +1,4 @@
 import {
-  buttonSize,
   draggableButton,
   negishutPos,
   road1,
@@ -26,7 +25,7 @@ const dragBtnOpt: JsEl = {
   className: "draggableButtonNegishut",
   id: "negishutDragBtn",
   style: {
-    width: `${buttonSize}px`,
+    width: "var(--negishut-fab-size, 70px)",
     aspectRatio: "1/1",
     position: "fixed",
     border: "3px solid var(--negishut-fab-border)",

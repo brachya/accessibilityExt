@@ -1,7 +1,23 @@
 import type { languages } from "./global";
 import type { NegishutDir } from "./dir";
+import { setButtonSize } from "./elements";
 
 export type NegishutColorScheme = "light" | "dark";
+
+export type NegishutFabSize = "small" | "default" | "large";
+
+export const NEGISHUT_FAB_SIZE_PX: Record<NegishutFabSize, number> = {
+  small: 56,
+  default: 70,
+  large: 84,
+};
+
+export function resolveFabSizePx(fabSize?: NegishutFabSize): number {
+  if (fabSize && fabSize in NEGISHUT_FAB_SIZE_PX) {
+    return NEGISHUT_FAB_SIZE_PX[fabSize];
+  }
+  return NEGISHUT_FAB_SIZE_PX.default;
+}
 
 export type NegishutTheme = {
   accent?: string;
@@ -18,6 +34,7 @@ export type NegishutTheme = {
   backdrop?: string;
   fabBorder?: string;
   fabRadius?: string;
+  fabSize?: NegishutFabSize;
   icon?: string;
   colorScheme?: NegishutColorScheme;
 };
@@ -46,6 +63,7 @@ export const DEFAULT_THEME: Required<NegishutTheme> = {
   backdrop: "rgb(0 0 0 / 0.45)",
   fabBorder: "#ffffff",
   fabRadius: "5px",
+  fabSize: "default",
   icon: "black",
   colorScheme: "light",
 };
@@ -86,6 +104,7 @@ function chromeCss(): string {
   --negishut-backdrop: ${theme.backdrop};
   --negishut-fab-border: ${theme.fabBorder};
   --negishut-fab-radius: ${theme.fabRadius};
+  --negishut-fab-size: ${resolveFabSizePx(theme.fabSize)}px;
   --negishut-icon: ${theme.icon};
   --negishut-color-scheme: ${theme.colorScheme};
   --negishut-z-panel: ${zIndex};
@@ -179,6 +198,8 @@ export function applyChrome(
   if (options?.zIndex != null && Number.isFinite(options.zIndex)) {
     zIndex = options.zIndex;
   }
+
+  setButtonSize(resolveFabSizePx(theme.fabSize));
 
   let el = document.getElementById(STYLE_ID) as HTMLStyleElement | null;
   if (!el) {

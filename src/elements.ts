@@ -40,6 +40,12 @@ export const negishutPos = JSON.parse(
   localStorage.getItem("NegishutPos") ?? "{}"
 );
 export let buttonSize = 70;
+
+export function setButtonSize(px: number): void {
+  if (Number.isFinite(px) && px > 0) {
+    buttonSize = px;
+  }
+}
 let isDragged: boolean = false;
 export const getIsDragged = () => isDragged;
 export const setIsDragged = (changeTo: boolean) => {
