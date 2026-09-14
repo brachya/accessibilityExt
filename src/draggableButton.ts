@@ -1,5 +1,6 @@
 import {
   draggableButton,
+  getIsDragged,
   negishutPos,
   road1,
   road2,
@@ -14,6 +15,7 @@ const image = document.createElement("div");
 let offsetX = 0; // X offset between cursor and button
 let offsetY = 0; // Y offset between cursor and button
 let isDragging = false; // Whether the button is being dragged
+let activePointer: "mouse" | "touch" | null = null;
 let xForBackup: number;
 let yForBackup: number;
 const savedFabLeft =
@@ -82,6 +84,8 @@ function pointerClient(event: TouchEvent | MouseEvent) {
 const startDrag = (event: TouchEvent | MouseEvent) => {
   // Prevent the default action, like text selection
   event.preventDefault();
+  setIsDragged(false);
+  activePointer = "touches" in event ? "touch" : "mouse";
   // Get the initial mouse position
   const { clientX, clientY } = pointerClient(event);
   // Set the initial offsets for dragging
@@ -121,9 +125,15 @@ const drag = (event: TouchEvent | MouseEvent) => {
 // Stop dragging when mouse up or touch end
 const stopDrag = () => {
   if (!isDragging) return;
-  negishutPos["x"] = xForBackup;
-  negishutPos["y"] = yForBackup;
-  localStorage.setItem("NegishutPos", JSON.stringify(negishutPos));
+  const wasDragged = getIsDragged();
+  const pointer = activePointer;
+  activePointer = null;
+
+  if (wasDragged) {
+    negishutPos["x"] = xForBackup;
+    negishutPos["y"] = yForBackup;
+    localStorage.setItem("NegishutPos", JSON.stringify(negishutPos));
+  }
 
   // Reset dragging flag
   isDragging = false;
@@ -136,6 +146,11 @@ const stopDrag = () => {
 
   // Reset cursor to default
   draggableButton.style.cursor = "grab";
+
+  // Touch: preventDefault on touchstart blocks synthetic click; open only after tap, not drag
+  if (pointer === "touch" && !wasDragged) {
+    openSideBar();
+  }
 };
 
 addEventListener("keydown", (event: KeyboardEvent) => {
@@ -149,7 +164,6 @@ addEventListener("keydown", (event: KeyboardEvent) => {
 draggableButton.addEventListener("mousedown", startDrag);
 draggableButton.addEventListener("touchstart", startDrag, { passive: false });
 draggableButton.addEventListener("click", openSideBar);
-draggableButton.addEventListener("touchstart", openSideBar, { passive: false });
 addEventListener("resize", resetBtnPos);
 
 export default draggableButton;
