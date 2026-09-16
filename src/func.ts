@@ -94,7 +94,16 @@ export const openSideBar = () => {
     }, 300);
   }
 };
+function fabIntersectsViewport(): boolean {
+  const { left, top, right, bottom } = draggableButton.getBoundingClientRect();
+  const vw = window.innerWidth;
+  const vh = window.innerHeight;
+  return right > 0 && left < vw && bottom > 0 && top < vh;
+}
+
 export const resetBtnPos = () => {
+  if (fabIntersectsViewport()) return;
+
   draggableButton.style.left = "";
   draggableButton.style.right = "";
   draggableButton.style.insetInlineStart = "20px";

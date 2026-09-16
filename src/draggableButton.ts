@@ -165,5 +165,6 @@ draggableButton.addEventListener("mousedown", startDrag);
 draggableButton.addEventListener("touchstart", startDrag, { passive: false });
 draggableButton.addEventListener("click", openSideBar);
 addEventListener("resize", resetBtnPos);
+resetBtnPos();
 
 export default draggableButton;
