@@ -8,7 +8,8 @@ import {
   road4,
   setIsDragged,
 } from "./elements";
-import { jsToStyle, openSideBar, resetBtnPos } from "./func";
+import { applyDefaultFabPosition, jsToStyle, openSideBar, resetBtnPos } from "./func";
+import { defaultFabInlineStart, getFabPlacement } from "./theme";
 import type { JsEl } from "./global";
 import { cases } from "./wheelChair";
 const image = document.createElement("div");
@@ -33,7 +34,7 @@ const dragBtnOpt: JsEl = {
     border: "3px solid var(--negishut-fab-border)",
     ...(savedFabLeft
       ? { left: savedFabLeft }
-      : { insetInlineStart: "90px" }),
+      : { insetInlineStart: defaultFabInlineStart() }),
     top: `${"y" in negishutPos ? negishutPos["y"] : window.innerHeight - 70}px`,
     backgroundColor: "var(--negishut-accent)",
     color: "var(--negishut-on-accent)",
@@ -164,7 +165,18 @@ addEventListener("keydown", (event: KeyboardEvent) => {
 draggableButton.addEventListener("mousedown", startDrag);
 draggableButton.addEventListener("touchstart", startDrag, { passive: false });
 draggableButton.addEventListener("click", openSideBar);
-addEventListener("resize", resetBtnPos);
-resetBtnPos();
+addEventListener("resize", () => {
+  if (!("x" in negishutPos) && getFabPlacement() === "aside") {
+    applyDefaultFabPosition();
+    return;
+  }
+  resetBtnPos();
+});
+
+/** Call after the button is in the document, before a visitor has dragged it. */
+export function settleFabPosition(): void {
+  if ("x" in negishutPos) return;
+  applyDefaultFabPosition();
+}
 
 export default draggableButton;

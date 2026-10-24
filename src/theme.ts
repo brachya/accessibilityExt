@@ -6,6 +6,9 @@ export type NegishutColorScheme = "light" | "dark";
 
 export type NegishutFabSize = "small" | "default" | "large";
 
+/** `screen` sits fully in the viewport. `aside` starts halfway off the inline-start edge. */
+export type NegishutFabPlacement = "screen" | "aside";
+
 export const NEGISHUT_FAB_SIZE_PX: Record<NegishutFabSize, number> = {
   small: 56,
   default: 70,
@@ -44,6 +47,7 @@ export type NegishutOptions = {
   dir?: NegishutDir | string;
   theme?: NegishutTheme;
   zIndex?: number;
+  fabPlacement?: NegishutFabPlacement;
 };
 
 export const DEFAULT_Z_INDEX = 10000;
@@ -72,6 +76,26 @@ const STYLE_ID = "negishut-chrome";
 
 let theme: Required<NegishutTheme> = { ...DEFAULT_THEME };
 let zIndex = DEFAULT_Z_INDEX;
+/** Fraction of the button that rests past the screen edge in aside mode. */
+export const ASIDE_HIDDEN_RATIO = 0.5;
+
+let fabPlacement: NegishutFabPlacement = "screen";
+
+export function setFabPlacement(value?: string): void {
+  fabPlacement = value === "aside" ? "aside" : "screen";
+}
+
+export function getFabPlacement(): NegishutFabPlacement {
+  return fabPlacement;
+}
+
+/** Inline-start offset used when the visitor has not dragged the button yet. */
+export function defaultFabInlineStart(): string {
+  if (fabPlacement === "aside") {
+    return `calc(var(--negishut-fab-size, 70px) * -${ASIDE_HIDDEN_RATIO})`;
+  }
+  return "20px";
+}
 
 function definedOnly<T extends object>(value: T): Partial<T> {
   return Object.fromEntries(
@@ -193,7 +217,10 @@ export function applyChrome(
     return;
   }
   if (options?.theme) {
-    theme = { ...theme, ...definedOnly(options.theme) } as Required<NegishutTheme>;
+    theme = {
+      ...theme,
+      ...definedOnly(options.theme),
+    } as Required<NegishutTheme>;
   }
   if (options?.zIndex != null && Number.isFinite(options.zIndex)) {
     zIndex = options.zIndex;

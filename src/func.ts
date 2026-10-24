@@ -1,4 +1,4 @@
-import { applySidebarDock } from "./dir";
+import { applySidebarDock, getDir } from "./dir";
 import {
   buttonSize,
   draggableButton,
@@ -15,6 +15,7 @@ import {
 } from "./elements";
 import type { JsEl } from "./global";
 import { translate } from "./lang";
+import { ASIDE_HIDDEN_RATIO, defaultFabInlineStart, getFabPlacement } from "./theme";
 
 export const jsToStyle = (
   el: HTMLElement,
@@ -101,12 +102,38 @@ function fabIntersectsViewport(): boolean {
   return right > 0 && left < vw && bottom > 0 && top < vh;
 }
 
+/** Resting spot used until the visitor drags the button. */
+export function applyDefaultFabPosition(): void {
+  draggableButton.style.right = "";
+
+  if (getFabPlacement() !== "aside") {
+    draggableButton.style.left = "";
+    draggableButton.style.insetInlineStart = defaultFabInlineStart();
+    return;
+  }
+
+  const size = draggableButton.getBoundingClientRect().width || buttonSize;
+  const hidden = size * ASIDE_HIDDEN_RATIO;
+  const viewportLeft = window.visualViewport?.offsetLeft ?? 0;
+  const viewportWidth = window.visualViewport?.width ?? window.innerWidth;
+  const targetLeft =
+    getDir() === "rtl"
+      ? viewportLeft + viewportWidth - size + hidden
+      : viewportLeft - hidden;
+  draggableButton.style.insetInlineStart = "";
+  draggableButton.style.left = `${targetLeft}px`;
+  const actualLeft = draggableButton.getBoundingClientRect().left;
+  const styledLeft = Number.parseFloat(draggableButton.style.left);
+  if (Number.isFinite(styledLeft) && Number.isFinite(actualLeft)) {
+    draggableButton.style.left = `${styledLeft + (targetLeft - actualLeft)}px`;
+  }
+}
+
 export const resetBtnPos = () => {
+  if (!draggableButton.isConnected) return;
   if (fabIntersectsViewport()) return;
 
-  draggableButton.style.left = "";
-  draggableButton.style.right = "";
-  draggableButton.style.insetInlineStart = "20px";
+  applyDefaultFabPosition();
   draggableButton.style.top = `${window.innerHeight - 90}px`;
 };
 export const createOptionsEl = (
