@@ -8,7 +8,13 @@ import {
   road4,
   setIsDragged,
 } from "./elements";
-import { applyDefaultFabPosition, jsToStyle, openSideBar, resetBtnPos } from "./func";
+import {
+  applyDefaultFabPosition,
+  jsToStyle,
+  openSideBar,
+  placeDefaultFabTop,
+  resetBtnPos,
+} from "./func";
 import { defaultFabInlineStart, getFabPlacement } from "./theme";
 import type { JsEl } from "./global";
 import { cases } from "./wheelChair";
@@ -165,18 +171,23 @@ addEventListener("keydown", (event: KeyboardEvent) => {
 draggableButton.addEventListener("mousedown", startDrag);
 draggableButton.addEventListener("touchstart", startDrag, { passive: false });
 draggableButton.addEventListener("click", openSideBar);
-addEventListener("resize", () => {
+function onViewportChange() {
   if (!("x" in negishutPos) && getFabPlacement() === "aside") {
     applyDefaultFabPosition();
+    placeDefaultFabTop();
     return;
   }
   resetBtnPos();
-});
+}
+
+addEventListener("resize", onViewportChange);
+window.visualViewport?.addEventListener("resize", onViewportChange);
 
 /** Call after the button is in the document, before a visitor has dragged it. */
 export function settleFabPosition(): void {
   if ("x" in negishutPos) return;
   applyDefaultFabPosition();
+  placeDefaultFabTop();
 }
 
 export default draggableButton;

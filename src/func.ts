@@ -102,6 +102,23 @@ function fabIntersectsViewport(): boolean {
   return right > 0 && left < vw && bottom > 0 && top < vh;
 }
 
+function visibleViewport(): { top: number; height: number } {
+  const viewport = window.visualViewport;
+  return {
+    top: viewport?.offsetTop ?? 0,
+    height: viewport?.height ?? window.innerHeight,
+  };
+}
+
+/** Bottom corner used until the visitor drags the button. */
+export function placeDefaultFabTop(): void {
+  const size = draggableButton.getBoundingClientRect().height || buttonSize;
+  const { top, height } = visibleViewport();
+  const margin = 20;
+  const next = top + height - size - margin;
+  draggableButton.style.top = `${Math.max(top + margin, next)}px`;
+}
+
 /** Resting spot used until the visitor drags the button. */
 export function applyDefaultFabPosition(): void {
   draggableButton.style.right = "";
@@ -134,7 +151,7 @@ export const resetBtnPos = () => {
   if (fabIntersectsViewport()) return;
 
   applyDefaultFabPosition();
-  draggableButton.style.top = `${window.innerHeight - 90}px`;
+  placeDefaultFabTop();
 };
 export const createOptionsEl = (
   elOptions: { value: string; textContent: string }[]
